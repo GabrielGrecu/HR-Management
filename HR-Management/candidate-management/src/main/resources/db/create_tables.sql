@@ -33,7 +33,7 @@ CREATE TABLE candidate_management.document (
 	id INT NOT NULL AUTO_INCREMENT,
     `type` ENUM('PDF', 'Word') NOT NULL,
     `name` VARCHAR(55) NOT NULL,
-    `path` BLOB NOT NULL,
+    `content` BLOB NOT NULL,
     candidate_id INT NOT NULL,
     PRIMARY KEY(id),
     CONSTRAINT fk_doc_candidate_id
@@ -45,21 +45,11 @@ CREATE TABLE candidate_management.document (
 CREATE TABLE candidate_management.feedback (
 	id INT NOT NULL AUTO_INCREMENT,
     `comment` VARCHAR(155) NOT NULL,
-    user_role ENUM('Hr', 'Tech') NOT NULL, 
+    user_role ENUM('Hr', 'Tech') NOT NULL,
+    `status` ENUM('In Review', 'Rejected', 'Accepted', 'Archived') NOT NULL,
     candidate_id INT NOT NULL,
     PRIMARY KEY(id),
     CONSTRAINT fk_fb_candidate_id
-	  FOREIGN KEY (candidate_id) REFERENCES candidate_management.candidate (id)
-	  ON DELETE CASCADE 
-      ON UPDATE CASCADE
-);
-
-CREATE TABLE candidate_management.`status` (
-	id INT NOT NULL AUTO_INCREMENT,
-	`type` ENUM('In Review', 'Rejected', 'Accepted', 'Archived') NOT NULL,
-    candidate_id INT NOT NULL,
-	PRIMARY KEY (id),
-    CONSTRAINT fk_status_candidate_id
 	  FOREIGN KEY (candidate_id) REFERENCES candidate_management.candidate (id)
 	  ON DELETE CASCADE 
       ON UPDATE CASCADE
