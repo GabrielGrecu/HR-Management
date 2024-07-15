@@ -1,9 +1,9 @@
 CREATE TABLE candidate_management.candidate (
 	id INT NOT NULL AUTO_INCREMENT,
-	`name` VARCHAR(55) NOT NULL,
+	username VARCHAR(45) NOT NULL UNIQUE,
 	birthday DATE NULL,
-	email VARCHAR(45) NOT NULL,
-	phone_number VARCHAR(45) NOT NULL,
+	email VARCHAR(45) NOT NULL UNIQUE,
+	phone_number VARCHAR(45) NOT NULL UNIQUE,
 	city VARCHAR(45) NULL,
 	faculty VARCHAR(65) NULL,
 	years_experience INT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE candidate_management.candidate (
 
 CREATE TABLE candidate_management.job (
 	id INT NOT NULL AUTO_INCREMENT,
-    title ENUM('Full-stack Developer', 'Front-end Developer', 'Back-end Developer', 'QA Tester') NOT NULL,
+    title VARCHAR(45) NOT NULL,
     PRIMARY KEY(id)
 );
 
@@ -31,9 +31,9 @@ CREATE TABLE candidate_management.candidate_job (
 
 CREATE TABLE candidate_management.document (
 	id INT NOT NULL AUTO_INCREMENT,
-    `type` ENUM('PDF', 'Word') NOT NULL,
-    `name` VARCHAR(55) NOT NULL,
-    `content` BLOB NOT NULL,
+    doc_type VARCHAR(25) NOT NULL,
+    doc_name VARCHAR(45) NOT NULL,
+    doc_content BLOB NOT NULL,
     candidate_id INT NOT NULL,
     PRIMARY KEY(id),
     CONSTRAINT fk_doc_candidate_id
@@ -44,9 +44,9 @@ CREATE TABLE candidate_management.document (
 
 CREATE TABLE candidate_management.feedback (
 	id INT NOT NULL AUTO_INCREMENT,
-    `comment` VARCHAR(155) NOT NULL,
-    user_role ENUM('Hr', 'Tech') NOT NULL,
-    `status` ENUM('In Review', 'Rejected', 'Accepted', 'Archived') NOT NULL,
+    feedback_comm VARCHAR(255) NOT NULL,
+    user_role VARCHAR(45) NOT NULL,
+    feedback_status VARCHAR(45) NOT NULL,
     candidate_id INT NOT NULL,
     PRIMARY KEY(id),
     CONSTRAINT fk_fb_candidate_id

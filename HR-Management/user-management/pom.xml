@@ -6,11 +6,10 @@
 		<groupId>com.nagarro.si</groupId>
 		<artifactId>HR-Management</artifactId>
 		<version>1.0-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>user-management</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${project.version}</version>
 	<name>user-management</name>
 	<description>Project from user-management</description>
 
@@ -18,26 +17,7 @@
 		<dependency>
 			<groupId>com.nagarro.si</groupId>
 			<artifactId>common</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>5.4.0.Final</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 
