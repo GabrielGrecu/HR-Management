@@ -1,0 +1,2 @@
+CREATE SCHEMA candidate_management;
+USE candidate_management;
