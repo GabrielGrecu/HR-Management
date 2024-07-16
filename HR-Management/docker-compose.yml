@@ -1,0 +1,44 @@
+# Define services
+services:
+
+  database:
+    image: mysql:latest
+    container_name: hr-management
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=nagarro
+      - MYSQL_DATABASE=nagarro
+    volumes:
+      - db:/var/lib/mysql
+
+
+  # Candidate management
+  candidate-management:
+    image: candidate-management:0.0.1-SNAPSHOT
+
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      - "spring.profiles.active=prod"
+    networks:
+      - backend
+
+  # User management
+  user-management:
+    image: user-management:0.0.1-SNAPSHOT
+    ports:
+      - "8081:8081"
+    restart: always
+    environment:
+      - "spring.profiles.active=prod"
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  db:
+    driver: local
