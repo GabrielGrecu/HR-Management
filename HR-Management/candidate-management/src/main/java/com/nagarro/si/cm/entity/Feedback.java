@@ -24,7 +24,7 @@ import jakarta.persistence.Table;
 public class Feedback {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "feedback_comm", nullable = false)

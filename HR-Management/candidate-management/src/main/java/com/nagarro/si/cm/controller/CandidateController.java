@@ -1,8 +1,7 @@
 package com.nagarro.si.cm.controller;
 
-import com.nagarro.si.cm.config.CandidateMapper;
-import com.nagarro.si.cm.dto.CandidateCreationDto;
-import com.nagarro.si.cm.dto.CandidateRetrievalDto;
+import com.nagarro.si.cm.util.CandidateMapper;
+import com.nagarro.si.cm.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.cm.service.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,30 +23,21 @@ public class CandidateController {
     @Autowired
     private CandidateService candidateService;
 
-    @Autowired
-    private CandidateMapper candidateMapper;
-
     @PostMapping
-    public ResponseEntity<CandidateRetrievalDto> createCandidate(@RequestBody CandidateCreationDto candidateCreationDTO) {
-        Candidate candidate = candidateMapper.toCandidate(candidateCreationDTO);
-        Candidate savedCandidate = candidateService.saveCandidate(candidate);
-        CandidateRetrievalDto candidateRetrievalDto = candidateMapper.toDTO(savedCandidate);
-        return new ResponseEntity<>(candidateRetrievalDto, HttpStatus.CREATED);
+    public ResponseEntity<CandidateDto> createCandidate(@RequestBody CandidateDto candidateDto) {
+        CandidateDto savedCandidateDto = candidateService.saveCandidate(candidateDto);
+        return new ResponseEntity<>(savedCandidateDto, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<CandidateRetrievalDto>> getAllCandidates() {
-        List<Candidate> candidates = candidateService.getAllCandidates();
-        List<CandidateRetrievalDto> candidateRetrievalDtos = candidates.stream()
-                .map(candidateMapper::toDTO)
-                .toList();
-        return ResponseEntity.ok(candidateRetrievalDtos);
+    public ResponseEntity<List<CandidateDto>> getAllCandidates() {
+        List<CandidateDto> candidateDtoList = candidateService.getAllCandidates();
+        return ResponseEntity.ok(candidateDtoList);
     }
 
     @GetMapping("/{candidateId}")
-    public ResponseEntity<CandidateRetrievalDto> getCandidateById(@PathVariable("candidateId") Integer candidateId) {
-        Candidate candidate = candidateService.getCandidateById(candidateId);
-        CandidateRetrievalDto candidateRetrievalDto = candidateMapper.toDTO(candidate);
-        return ResponseEntity.ok(candidateRetrievalDto);
+    public ResponseEntity<CandidateDto> getCandidateById(@PathVariable("candidateId") Integer candidateId) {
+        CandidateDto candidateDto = candidateService.getCandidateById(candidateId);
+        return ResponseEntity.ok(candidateDto);
     }
 }
