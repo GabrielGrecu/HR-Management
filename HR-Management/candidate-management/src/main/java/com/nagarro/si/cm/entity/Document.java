@@ -1,6 +1,5 @@
 package com.nagarro.si.cm.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +20,6 @@ import java.sql.Blob;
 @Entity
 @Table(name = "document")
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class Document {
 

@@ -1,6 +1,5 @@
 package com.nagarro.si.cm.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +18,6 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "feedback")
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class Feedback {
 
