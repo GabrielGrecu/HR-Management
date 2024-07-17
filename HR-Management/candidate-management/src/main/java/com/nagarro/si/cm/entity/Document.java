@@ -1,5 +1,6 @@
 package com.nagarro.si.cm.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +21,7 @@ import java.sql.Blob;
 @Entity
 @Table(name = "document")
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class Document {
 
@@ -41,11 +43,4 @@ public class Document {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "candidate_id", nullable = false)
     private Candidate candidate;
-
-    public Document(DocumentType type, String name, Blob content, Candidate candidate) {
-        this.type = type;
-        this.name = name;
-        this.content = content;
-        this.candidate = candidate;
-    }
 }

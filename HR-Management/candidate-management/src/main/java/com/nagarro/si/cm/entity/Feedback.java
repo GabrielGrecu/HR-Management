@@ -1,5 +1,6 @@
 package com.nagarro.si.cm.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "feedback")
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class Feedback {
 
@@ -39,11 +41,4 @@ public class Feedback {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "candidate_id", nullable = false)
     private Candidate candidate;
-
-    public Feedback(String comment, UserRole role, Status status, Candidate candidate) {
-        this.comment = comment;
-        this.role = role;
-        this.status = status;
-        this.candidate = candidate;
-    }
 }

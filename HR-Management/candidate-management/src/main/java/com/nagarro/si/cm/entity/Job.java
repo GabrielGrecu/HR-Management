@@ -1,5 +1,6 @@
 package com.nagarro.si.cm.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ import java.util.Set;
 @Entity
 @Table(name = "job")
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class Job {
 
@@ -31,9 +33,4 @@ public class Job {
 
     @ManyToMany(mappedBy = "jobs")
     private Set<Candidate> candidates;
-
-    public Job(JobTitle title) {
-        this.title = title;
-        this.candidates = new HashSet<>();
-    }
 }
