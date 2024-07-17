@@ -5,6 +5,7 @@ import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.cm.exception.ResourceNotFoundException;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import com.nagarro.si.cm.util.CandidateMapper;
+import com.nagarro.si.cm.util.ValidatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,12 @@ public class CandidateServiceImpl implements CandidateService {
     @Autowired
     private CandidateMapper candidateMapper;
 
+    @Autowired
+    private ValidatorUtil validatorUtil;
+
     @Override
     public CandidateDto saveCandidate(CandidateDto candidateDto) {
+        validatorUtil.validate(candidateDto);
         Candidate candidate = candidateMapper.toCandidate(candidateDto);
         Candidate savedCandidate = candidateRepository.save(candidate);
         return candidateMapper.toDTO(savedCandidate);

@@ -9,14 +9,14 @@ public class CandidateMapper {
 
     public Candidate toCandidate(CandidateDto candidateDto) {
         return new Candidate(
-                candidateDto.getUsername(),
-                java.sql.Date.valueOf(candidateDto.getBirthday()),
-                candidateDto.getEmail(),
-                candidateDto.getCity(),
-                candidateDto.getFaculty(),
-                candidateDto.getPhoneNumber(),
-                candidateDto.getYearsOfExperience(),
-                candidateDto.getRecruitmentChannel()
+                candidateDto.username(),
+                java.sql.Date.valueOf(candidateDto.birthday()),
+                candidateDto.email(),
+                candidateDto.city(),
+                candidateDto.faculty(),
+                candidateDto.phoneNumber(),
+                candidateDto.yearsOfExperience(),
+                candidateDto.recruitmentChannel()
         );
     }
 

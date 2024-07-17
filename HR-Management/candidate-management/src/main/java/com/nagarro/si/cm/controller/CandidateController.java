@@ -1,9 +1,9 @@
 package com.nagarro.si.cm.controller;
 
-import com.nagarro.si.cm.util.CandidateMapper;
 import com.nagarro.si.cm.dto.CandidateDto;
-import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.cm.service.CandidateService;
+import com.nagarro.si.cm.validation.EmailValidator;
+import com.nagarro.si.cm.validation.PhoneNumberValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

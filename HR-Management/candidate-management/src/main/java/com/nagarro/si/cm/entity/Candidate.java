@@ -1,8 +1,7 @@
 package com.nagarro.si.cm.entity;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -24,8 +23,7 @@ import java.util.Set;
 @Entity
 @Table(name = "candidate")
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class Candidate {
 
     @Id
@@ -64,27 +62,4 @@ public class Candidate {
             joinColumns = @JoinColumn(name = "candidate_id"),
             inverseJoinColumns = @JoinColumn(name = "job_id"))
     private Set<Job> jobs;
-
-    public Candidate(String username,
-                     Date birthday,
-                     String email,
-                     String city,
-                     String faculty,
-                     String phoneNumber,
-                     int yearsOfExperience,
-                     String recruitmentChannel) {
-
-        this.username = username;
-        this.birthday = birthday;
-        this.email = email;
-        this.city = city;
-        this.faculty = faculty;
-        this.phoneNumber = phoneNumber;
-        this.yearsOfExperience = yearsOfExperience;
-        this.recruitmentChannel = recruitmentChannel;
-
-        this.documents = new ArrayList<>();
-        this.feedbackList = new ArrayList<>();
-        this.jobs = new HashSet<>();
-    }
 }

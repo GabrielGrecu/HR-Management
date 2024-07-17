@@ -1,8 +1,7 @@
 package com.nagarro.si.cm.entity;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,8 +18,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "feedback")
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class Feedback {
 
     @Id
