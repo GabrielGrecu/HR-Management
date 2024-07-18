@@ -1,10 +1,10 @@
 package com.nagarro.si.um.service;
 
 import com.nagarro.si.um.dto.UserDTO;
-import com.nagarro.si.um.entity.User;
 import com.nagarro.si.um.entity.Role;
-import com.nagarro.si.um.repository.UserRepository;
+import com.nagarro.si.um.entity.User;
 import com.nagarro.si.um.repository.RoleRepository;
+import com.nagarro.si.um.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

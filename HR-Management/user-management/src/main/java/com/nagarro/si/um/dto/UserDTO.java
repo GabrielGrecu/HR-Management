@@ -6,5 +6,3 @@ public record UserDTO(
         String password,
         Long roleId) {
 }
-
-
