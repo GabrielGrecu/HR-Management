@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ValidatorUtil {
 
-    private EmailValidator emailValidator;
-    private PhoneNumberValidator phoneNumberValidator;
+    private final EmailValidator emailValidator;
+    private final PhoneNumberValidator phoneNumberValidator;
 
     public ValidatorUtil() {
         emailValidator = new EmailValidator();
