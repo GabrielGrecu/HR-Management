@@ -2,8 +2,9 @@ package com.nagarro.si.um.service;
 
 import com.nagarro.si.um.dto.UserDTO;
 import com.nagarro.si.um.entity.User;
-import com.nagarro.si.um.mapper.UserMapper;
+import com.nagarro.si.um.entity.Role;
 import com.nagarro.si.um.repository.UserRepository;
+import com.nagarro.si.um.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +15,20 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private UserMapper userMapper;
-
-    public User createUser(UserDTO userDTO) {
-        User user = userMapper.toEntity(userDTO);
-        return userRepository.save(user);
-    }
+    private RoleRepository roleRepository;
 
     public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findById(id).orElse(null);
+    }
+
+    public User createUser(UserDTO userDTO) {
+        Role role = roleRepository.findById(userDTO.roleId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid role ID"));
+        User user = new User();
+        user.setUsername(userDTO.username());
+        user.setEmail(userDTO.email());
+        user.setPassword(userDTO.password());
+        user.setRole(role);
+        return userRepository.save(user);
     }
 }
