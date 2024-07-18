@@ -12,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -31,9 +30,4 @@ public class Job {
 
     @ManyToMany(mappedBy = "jobs")
     private Set<Candidate> candidates;
-
-    public Job(JobTitle title) {
-        this.title = title;
-        this.candidates = new HashSet<>();
-    }
 }

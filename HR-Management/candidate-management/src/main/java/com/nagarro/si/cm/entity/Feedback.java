@@ -39,11 +39,4 @@ public class Feedback {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "candidate_id", nullable = false)
     private Candidate candidate;
-
-    public Feedback(String comment, UserRole role, Status status, Candidate candidate) {
-        this.comment = comment;
-        this.role = role;
-        this.status = status;
-        this.candidate = candidate;
-    }
 }

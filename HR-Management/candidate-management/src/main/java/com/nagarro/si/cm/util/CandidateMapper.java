@@ -4,24 +4,28 @@ import com.nagarro.si.cm.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
 import org.springframework.stereotype.Component;
 
+import java.sql.Date;
+
 @Component
 public class CandidateMapper {
 
     public Candidate toCandidate(CandidateDto candidateDto) {
-        return new Candidate(
-                candidateDto.username(),
-                java.sql.Date.valueOf(candidateDto.birthday()),
-                candidateDto.email(),
-                candidateDto.city(),
-                candidateDto.faculty(),
-                candidateDto.phoneNumber(),
-                candidateDto.yearsOfExperience(),
-                candidateDto.recruitmentChannel()
-        );
+        Candidate candidate = new Candidate();
+        candidate.setId(candidateDto.getId());
+        candidate.setUsername(candidateDto.getUsername());
+        candidate.setBirthday(Date.valueOf(candidateDto.getBirthday()));
+        candidate.setEmail(candidateDto.getEmail());
+        candidate.setCity(candidateDto.getCity());
+        candidate.setFaculty(candidateDto.getFaculty());
+        candidate.setPhoneNumber(candidateDto.getPhoneNumber());
+        candidate.setYearsOfExperience(candidateDto.getYearsOfExperience());
+        candidate.setRecruitmentChannel(candidateDto.getRecruitmentChannel());
+        return candidate;
     }
 
     public CandidateDto toDTO(Candidate candidate) {
         return new CandidateDto(
+                candidate.getId(),
                 candidate.getUsername(),
                 candidate.getBirthday().toString(),
                 candidate.getEmail(),
