@@ -3,8 +3,6 @@ package com.nagarro.si.cm.controller;
 import com.nagarro.si.cm.dto.CandidateDto;
 import com.nagarro.si.cm.service.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,20 +20,17 @@ public class CandidateController {
     private CandidateService candidateService;
 
     @PostMapping
-    public ResponseEntity<CandidateDto> createCandidate(@RequestBody CandidateDto candidateDto) {
-        CandidateDto savedCandidateDto = candidateService.saveCandidate(candidateDto);
-        return new ResponseEntity<>(savedCandidateDto, HttpStatus.CREATED);
+    public CandidateDto createCandidate(@RequestBody CandidateDto candidateDto) {
+        return candidateService.saveCandidate(candidateDto);
     }
 
     @GetMapping
-    public ResponseEntity<List<CandidateDto>> getAllCandidates() {
-        List<CandidateDto> candidateDtoList = candidateService.getAllCandidates();
-        return ResponseEntity.ok(candidateDtoList);
+    public List<CandidateDto> getAllCandidates() {
+        return candidateService.getAllCandidates();
     }
 
     @GetMapping("/{candidateId}")
-    public ResponseEntity<CandidateDto> getCandidateById(@PathVariable("candidateId") Integer candidateId) {
-        CandidateDto candidateDto = candidateService.getCandidateById(candidateId);
-        return ResponseEntity.ok(candidateDto);
+    public CandidateDto getCandidateById(@PathVariable("candidateId") Integer candidateId) {
+        return candidateService.getCandidateById(candidateId);
     }
 }
