@@ -17,10 +17,10 @@ public class ValidatorUtil {
     }
 
     public void validate(CandidateDto candidateDto) {
-        if (!emailValidator.validateData(candidateDto.email())) {
+        if (!emailValidator.validateData(candidateDto.getEmail())) {
             throw new IllegalArgumentException("Invalid email format");
         }
-        if (!phoneNumberValidator.validateData(candidateDto.phoneNumber())) {
+        if (!phoneNumberValidator.validateData(candidateDto.getPhoneNumber())) {
             throw new IllegalArgumentException("Invalid phone number format");
         }
     }
