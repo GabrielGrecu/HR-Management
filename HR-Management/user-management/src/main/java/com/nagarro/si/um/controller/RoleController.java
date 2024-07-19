@@ -19,14 +19,12 @@ public class RoleController {
     private RoleService roleService;
 
     @PostMapping
-    public ResponseEntity<RoleDTO> createRole(@RequestBody RoleDTO roleDTO) {
-        RoleDTO createdRole = roleService.createRole(roleDTO);
-        return ResponseEntity.ok(createdRole);
+    public RoleDTO createRole(@RequestBody RoleDTO roleDTO) {
+        return roleService.createRole(roleDTO);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RoleDTO> getRoleById(@PathVariable("id") Long id) {
-        RoleDTO roleDTO = roleService.getRoleById(id);
-        return ResponseEntity.ok(roleDTO);
+    public RoleDTO getRoleById(@PathVariable("id") Long id) {
+        return roleService.getRoleById(id);
     }
 }
