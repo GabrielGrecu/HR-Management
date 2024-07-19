@@ -2,14 +2,11 @@ package com.nagarro.si.cm.service;
 
 import com.nagarro.si.cm.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
-import com.nagarro.si.cm.exception.DuplicateResourceException;
 import com.nagarro.si.cm.exception.ResourceNotFoundException;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import com.nagarro.si.cm.util.CandidateMapper;
 import com.nagarro.si.cm.util.CandidateValidator;
 import com.nagarro.si.cm.util.ValidatorUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,24 +18,20 @@ public class CandidateServiceImpl implements CandidateService {
 
     private final CandidateRepository candidateRepository;
     private final CandidateMapper candidateMapper;
-    private final ValidatorUtil validatorUtil;
     private final CandidateValidator candidateValidator;
-    private static final Logger logger = LoggerFactory.getLogger(CandidateServiceImpl.class);
 
     @Autowired
     public CandidateServiceImpl(CandidateRepository candidateRepository,
                                 CandidateMapper candidateMapper,
-                                ValidatorUtil validatorUtil,
                                 CandidateValidator candidateValidator) {
         this.candidateRepository = candidateRepository;
         this.candidateMapper = candidateMapper;
-        this.validatorUtil = validatorUtil;
         this.candidateValidator = candidateValidator;
     }
 
     @Override
     public CandidateDto saveCandidate(CandidateDto candidateDto) {
-        validatorUtil.validate(candidateDto);
+        ValidatorUtil.validate(candidateDto);
         Candidate candidate = candidateMapper.toCandidate(candidateDto);
         Candidate savedCandidate = candidateRepository.save(candidate);
         return candidateMapper.toDTO(savedCandidate);
@@ -78,18 +71,11 @@ public class CandidateServiceImpl implements CandidateService {
     public void updateCandidate(Integer candidateId, CandidateDto candidateDto) throws ParseException {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Candidate with id [%s] not found".formatted(candidateId)
-                ));
+                        "Candidate with id [%s] not found".formatted(candidateId)));
 
-        validatorUtil.validate(candidateDto);
-
-        try {
-            candidateValidator.updateCandidateFields(candidate, candidateDto);
-            candidateRepository.save(candidate);
-        } catch (DuplicateResourceException e) {
-            logger.error("Error updating candidate: {}", e.getMessage());
-            throw e;
-        }
+        ValidatorUtil.validate(candidateDto);
+        candidateValidator.updateCandidateFields(candidate, candidateDto);
+        candidateRepository.save(candidate);
     }
 
 
@@ -97,17 +83,10 @@ public class CandidateServiceImpl implements CandidateService {
     public void patchCandidate(Integer candidateId, CandidateDto updateRequest) throws ParseException {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Candidate with id [%s] not found".formatted(candidateId)
-                ));
+                        "Candidate with id [%s] not found".formatted(candidateId)));
 
-        validatorUtil.validate(updateRequest);
-
-        try {
-            candidateValidator.updateCandidateFields(candidate, updateRequest);
-            candidateRepository.save(candidate);
-        } catch (DuplicateResourceException e) {
-            logger.error("Error patching candidate: {}", e.getMessage());
-            throw e;
-        }
+        ValidatorUtil.validate(updateRequest);
+        candidateValidator.updateCandidateFields(candidate, updateRequest);
+        candidateRepository.save(candidate);
     }
 }
