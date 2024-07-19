@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class PatternValidator implements Validator {
 
-    private Pattern pattern;
+    private final Pattern pattern;
 
     public PatternValidator(String regex) {
         this.pattern = Pattern.compile(regex);
