@@ -19,24 +19,19 @@ public class CandidateValidator {
         this.candidateRepository = candidateRepository;
     }
 
-    public boolean updateCandidateFields(Candidate candidate, CandidateDto candidateDto) throws ParseException {
-        boolean changes = false;
-
+    public void updateCandidateFields(Candidate candidate, CandidateDto candidateDto) throws ParseException {
         if (Objects.nonNull(candidateDto.getUsername()) && !Objects.equals(candidateDto.getUsername(), candidate.getUsername())) {
             if (candidateRepository.existsCandidateByUsername(candidateDto.getUsername())) {
                 throw new DuplicateResourceException("Username already taken");
             }
             candidate.setUsername(candidateDto.getUsername());
-            changes = true;
         }
 
-        if (Objects.nonNull(candidateDto.getBirthday()) && !Objects.equals(candidateDto.getBirthday(), candidate.getBirthday())) {
+        if (Objects.nonNull(candidateDto.getBirthday()) && !Objects.equals(candidateDto.getBirthday(), candidate.getBirthday().toString())) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             java.util.Date parsedDate = dateFormat.parse(candidateDto.getBirthday());
             java.sql.Date sqlDate = new java.sql.Date(parsedDate.getTime());
-
             candidate.setBirthday(sqlDate);
-            changes = true;
         }
 
         if (Objects.nonNull(candidateDto.getEmail()) && !Objects.equals(candidateDto.getEmail(), candidate.getEmail())) {
@@ -44,17 +39,14 @@ public class CandidateValidator {
                 throw new DuplicateResourceException("Email already taken");
             }
             candidate.setEmail(candidateDto.getEmail());
-            changes = true;
         }
 
         if (Objects.nonNull(candidateDto.getCity()) && !Objects.equals(candidateDto.getCity(), candidate.getCity())) {
             candidate.setCity(candidateDto.getCity());
-            changes = true;
         }
 
         if (Objects.nonNull(candidateDto.getFaculty()) && !Objects.equals(candidateDto.getFaculty(), candidate.getFaculty())) {
             candidate.setFaculty(candidateDto.getFaculty());
-            changes = true;
         }
 
         if (Objects.nonNull(candidateDto.getPhoneNumber()) && !Objects.equals(candidateDto.getPhoneNumber(), candidate.getPhoneNumber())) {
@@ -62,19 +54,14 @@ public class CandidateValidator {
                 throw new DuplicateResourceException("Phone number already taken");
             }
             candidate.setPhoneNumber(candidateDto.getPhoneNumber());
-            changes = true;
         }
 
         if (candidateDto.getYearsOfExperience() != 0 && candidateDto.getYearsOfExperience() != candidate.getYearsOfExperience()) {
             candidate.setYearsOfExperience(candidateDto.getYearsOfExperience());
-            changes = true;
         }
 
         if (Objects.nonNull(candidateDto.getRecruitmentChannel()) && !Objects.equals(candidateDto.getRecruitmentChannel(), candidate.getRecruitmentChannel())) {
             candidate.setRecruitmentChannel(candidateDto.getRecruitmentChannel());
-            changes = true;
         }
-
-        return changes;
     }
 }

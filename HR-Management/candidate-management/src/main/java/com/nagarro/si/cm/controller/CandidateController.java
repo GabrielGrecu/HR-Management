@@ -22,8 +22,12 @@ import java.util.List;
 @RequestMapping("/candidates")
 public class CandidateController {
 
-    @Autowired
     private CandidateService candidateService;
+
+    @Autowired
+    public CandidateController(CandidateService candidateService){
+        this.candidateService = candidateService;
+    }
 
     @PostMapping
     public ResponseEntity<CandidateDto> createCandidate(@RequestBody CandidateDto candidateDto) {
