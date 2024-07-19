@@ -3,8 +3,8 @@ package com.nagarro.si.um.service;
 import com.nagarro.si.um.dto.RoleDTO;
 import com.nagarro.si.um.entity.Role;
 import com.nagarro.si.um.mapper.RoleMapper;
+import com.nagarro.si.um.exception.EntityNotFoundException;
 import com.nagarro.si.um.repository.RoleRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
