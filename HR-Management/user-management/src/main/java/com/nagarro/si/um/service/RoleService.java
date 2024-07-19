@@ -11,11 +11,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class RoleService {
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
 
     @Autowired
-    private RoleMapper roleMapper;
+    public RoleService(RoleRepository roleRepository, RoleMapper roleMapper) {
+        this.roleRepository = roleRepository;
+        this.roleMapper = roleMapper;
+    }
 
     public RoleDTO createRole(RoleDTO roleDTO) {
         Role role = roleMapper.toEntity(roleDTO);

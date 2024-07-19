@@ -14,14 +14,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final UserMapper userMapper;
 
     @Autowired
-    private RoleRepository roleRepository;
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.userMapper = userMapper;
+    }
 
-    @Autowired
-    private UserMapper userMapper;
 
     public User createUser(UserDTO userDTO) {
         Role role = roleRepository.findById(userDTO.roleId())

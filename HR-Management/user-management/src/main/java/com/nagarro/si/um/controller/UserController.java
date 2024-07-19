@@ -6,17 +6,25 @@ import com.nagarro.si.um.exception.UserNotFoundException;
 import com.nagarro.si.um.mapper.UserMapper;
 import com.nagarro.si.um.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final UserMapper userMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    public UserController(UserService userService, UserMapper userMapper) {
+        this.userService = userService;
+        this.userMapper = userMapper;
+    }
 
     @GetMapping("/{id}")
     public UserDTO getUserById(@PathVariable("id") Long id) {
