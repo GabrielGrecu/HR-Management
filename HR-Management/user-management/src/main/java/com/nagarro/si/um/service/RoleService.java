@@ -2,9 +2,9 @@ package com.nagarro.si.um.service;
 
 import com.nagarro.si.um.dto.RoleDTO;
 import com.nagarro.si.um.entity.Role;
-import com.nagarro.si.um.exception.RoleNotFoundException;
 import com.nagarro.si.um.mapper.RoleMapper;
 import com.nagarro.si.um.repository.RoleRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +21,14 @@ public class RoleService {
     }
 
     public RoleDTO createRole(RoleDTO roleDTO) {
-        Role role = roleMapper.toEntity(roleDTO);
+        Role role = roleMapper.toRole(roleDTO);
         Role savedRole = roleRepository.save(role);
-        return roleMapper.toDTO(savedRole);
+        return roleMapper.toRoleDTO(savedRole);
     }
 
     public RoleDTO getRoleById(Long id) {
         Role role = roleRepository.findById(id)
-                .orElseThrow(() -> new RoleNotFoundException("Role with ID " + id + " not found"));
-        return roleMapper.toDTO(role);
+                .orElseThrow(() -> new EntityNotFoundException("Role with ID " + id + " not found"));
+        return roleMapper.toRoleDTO(role);
     }
 }
