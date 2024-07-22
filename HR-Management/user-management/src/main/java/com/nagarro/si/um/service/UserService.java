@@ -38,4 +38,25 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User with ID " + id + " not found"));
         return userMapper.toUserDTO(user);
     }
+    public UserDTO updateUser(Long id, UserDTO userDTO) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User with ID " + id + " not found"));
+
+        Role role = roleRepository.findById(userDTO.roleId())
+                .orElseThrow(() -> new EntityNotFoundException("Role with ID " + userDTO.roleId() + " not found"));
+
+        user.setUsername(userDTO.username());
+        user.setEmail(userDTO.email());
+        user.setPassword(userDTO.password());
+        user.setRole(role);
+
+        User updatedUser = userRepository.save(user);
+        return userMapper.toUserDTO(updatedUser);
+    }
+
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User with ID " + id + " not found"));
+        userRepository.delete(user);
+    }
 }
