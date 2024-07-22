@@ -4,6 +4,7 @@ import com.nagarro.si.cm.dto.CandidateDto;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 public interface CandidateService {
 
@@ -12,6 +13,10 @@ public interface CandidateService {
     List<CandidateDto> getAllCandidates();
 
     CandidateDto getCandidateById(int candidateId);
+
+    CandidateDto getCandidateByUsername(String username);
+
+    List<CandidateDto> filterCandidatesByAnyField(Map<String, Object> filters);
 
     void deleteCandidateById(int candidateId);
 
