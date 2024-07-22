@@ -9,7 +9,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -66,5 +68,35 @@ public class CandidateControllerTest {
         assertNotNull(result);
         assertEquals(candidateDto, result);
         verify(candidateService, times(1)).getCandidateById(candidateId);
+    }
+
+    @Test
+    public void testGetCandidateByUsername() {
+        String username = "DianaH";
+        CandidateDto candidateDto = new CandidateDto();
+        when(candidateService.getCandidateByUsername(username)).thenReturn(candidateDto);
+
+        CandidateDto result = candidateController.getCandidateByUsername(username);
+
+        assertNotNull(result);
+        assertEquals(candidateDto, result);
+        verify(candidateService, times(1)).getCandidateByUsername(username);
+    }
+
+    @Test
+    public void testSearchCandidates() {
+        Map<String, Object> parameters = new HashMap<>();
+        CandidateDto candidateDto1 = new CandidateDto();
+        CandidateDto candidateDto2 = new CandidateDto();
+        List<CandidateDto> expectedCandidates = Arrays.asList(candidateDto1, candidateDto2);
+        when(candidateService.filterCandidatesByAnyField(parameters)).thenReturn(expectedCandidates);
+
+        List<CandidateDto> result = candidateController.searchCandidates(parameters);
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(candidateDto1, result.get(0));
+        assertEquals(candidateDto2, result.get(1));
+        verify(candidateService, times(1)).filterCandidatesByAnyField(parameters);
     }
 }

@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/candidates")
@@ -40,6 +42,16 @@ public class CandidateController {
     @GetMapping("/{candidateId}")
     public CandidateDto getCandidateById(@PathVariable("candidateId") Integer candidateId) {
         return candidateService.getCandidateById(candidateId);
+    }
+
+    @GetMapping("/username/{username}")
+    public CandidateDto getCandidateByUsername(@PathVariable("username") String username) {
+        return candidateService.getCandidateByUsername(username);
+    }
+
+    @GetMapping("/search")
+    public List<CandidateDto> searchCandidates(@RequestParam Map<String, Object> params) {
+        return candidateService.filterCandidatesByAnyField(params);
     }
 
     @DeleteMapping("{candidateId}")
