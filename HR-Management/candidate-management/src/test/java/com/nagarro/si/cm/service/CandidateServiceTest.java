@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -97,9 +98,8 @@ public class CandidateServiceTest {
     public void testSaveCandidateInvalidEmail() {
         candidateDto1.setEmail("diagmail.com");
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            candidateService.saveCandidate(candidateDto1);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                candidateService.saveCandidate(candidateDto1));
 
         assertEquals("Invalid email format", exception.getMessage());
         verifyNoInteractions(candidateRepository, candidateMapper);
@@ -109,9 +109,8 @@ public class CandidateServiceTest {
     public void testSaveCandidateInvalidPhoneNumber() {
         candidateDto1.setPhoneNumber("760271177");
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            candidateService.saveCandidate(candidateDto1);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+            candidateService.saveCandidate(candidateDto1));
 
         assertEquals("Invalid phone number format", exception.getMessage());
         verifyNoInteractions(candidateRepository, candidateMapper);
@@ -137,7 +136,6 @@ public class CandidateServiceTest {
     @Test
     public void testGetCandidateById() {
         int candidateId = 1;
-
         when(candidateRepository.findById(candidateId)).thenReturn(Optional.of(candidate1));
         when(candidateMapper.toDTO(candidate1)).thenReturn(candidateDto1);
 
@@ -154,9 +152,8 @@ public class CandidateServiceTest {
         int candidateId = 1;
         when(candidateRepository.findById(candidateId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            candidateService.getCandidateById(candidateId);
-        });
+        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
+            candidateService.getCandidateById(candidateId));
 
         assertEquals(String.format("Candidate with id = %d not found", candidateId), thrown.getMessage());
         verify(candidateRepository, times(1)).findById(candidateId);
@@ -183,9 +180,8 @@ public class CandidateServiceTest {
         String username = "Dia";
         when(candidateRepository.getCandidateByUsername(username)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            candidateService.getCandidateByUsername(username);
-        });
+        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
+            candidateService.getCandidateByUsername(username));
 
         assertEquals(String.format("Candidate with username = %s not found", username), thrown.getMessage());
         verify(candidateRepository, times(1)).getCandidateByUsername(username);
@@ -204,8 +200,7 @@ public class CandidateServiceTest {
         List<CandidateDto> result = candidateService.filterCandidatesByAnyField(filters);
 
         assertEquals(1, result.size());
-        assertEquals("DianaH", result.get(0).getUsername());
-        assertEquals("diana.hategan1107@gmail.com", result.get(0).getEmail());
+        assertEquals(candidateDto1, result.get(0));
         verify(candidateRepository, times(1)).findAll(any(Specification.class));
     }
 
@@ -216,9 +211,8 @@ public class CandidateServiceTest {
         filters.put("email", "diana.hategan1107@yahoo.com");
         when(candidateRepository.findAll(any(Specification.class))).thenReturn(Collections.emptyList());
 
-        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            candidateService.filterCandidatesByAnyField(filters);
-        });
+        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
+            candidateService.filterCandidatesByAnyField(filters));
 
         assertEquals("No candidates were found matching the provided filters", thrown.getMessage());
         verify(candidateRepository, times(1)).findAll(any(Specification.class));
@@ -240,9 +234,8 @@ public class CandidateServiceTest {
         int candidateId = 1;
         when(candidateRepository.existsCandidateById(candidateId)).thenReturn(false);
 
-        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            candidateService.deleteCandidateById(candidateId);
-        });
+        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
+            candidateService.deleteCandidateById(candidateId));
 
         assertEquals("candidate with id [1] not found", thrown.getMessage());
         verify(candidateRepository, times(1)).existsCandidateById(candidateId);
@@ -267,9 +260,8 @@ public class CandidateServiceTest {
         int candidateId = 1;
         when(candidateRepository.findById(candidateId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            candidateService.updateCandidate(candidateId, candidateDto1);
-        });
+        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
+            candidateService.updateCandidate(candidateId, candidateDto1));
 
         assertEquals("Candidate with id [1] not found", thrown.getMessage());
         verify(candidateRepository, times(1)).findById(candidateId);
@@ -294,9 +286,8 @@ public class CandidateServiceTest {
         int candidateId = 1;
         when(candidateRepository.findById(candidateId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            candidateService.patchCandidate(candidateId, candidateDto1);
-        });
+        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
+            candidateService.patchCandidate(candidateId, candidateDto1));
 
         assertEquals("Candidate with id [1] not found", thrown.getMessage());
         verify(candidateRepository, times(1)).findById(candidateId);
