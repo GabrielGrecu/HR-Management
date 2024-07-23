@@ -22,7 +22,7 @@ import java.util.Map;
 @RequestMapping("/candidates")
 public class CandidateController {
 
-    private CandidateService candidateService;
+    private final CandidateService candidateService;
 
     @Autowired
     public CandidateController(CandidateService candidateService) {
