@@ -78,11 +78,11 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public void deleteCandidateById(int candidateId) {
-        checkIfcandidateExistsOrThrow(candidateId);
+        checkIfCandidateExistsOrThrow(candidateId);
         candidateRepository.deleteById(candidateId);
     }
 
-    private void checkIfcandidateExistsOrThrow(int candidateId) {
+    private void checkIfCandidateExistsOrThrow(int candidateId) {
         if (!candidateRepository.existsCandidateById(candidateId)) {
             throw new ResourceNotFoundException(
                     "candidate with id [%s] not found".formatted(candidateId)

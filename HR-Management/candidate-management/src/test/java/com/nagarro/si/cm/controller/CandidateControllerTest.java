@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -98,5 +99,34 @@ public class CandidateControllerTest {
         assertEquals(candidateDto1, result.get(0));
         assertEquals(candidateDto2, result.get(1));
         verify(candidateService, times(1)).filterCandidatesByAnyField(parameters);
+    }
+
+    @Test
+    public void testDeleteCandidate() {
+        int candidateId = 1;
+
+        candidateController.deleteCandidate(candidateId);
+
+        verify(candidateService, times(1)).deleteCandidateById(candidateId);
+    }
+
+    @Test
+    public void testUpdateCandidate() throws ParseException {
+        int candidateId = 1;
+        CandidateDto candidateDto = new CandidateDto();
+
+        candidateController.updateCandidate(candidateId, candidateDto);
+
+        verify(candidateService, times(1)).updateCandidate(candidateId, candidateDto);
+    }
+
+    @Test
+    public void testPatchUpdateCandidate() throws ParseException {
+        int candidateId = 1;
+        CandidateDto candidateDto = new CandidateDto();
+
+        candidateController.patchUpdateCandidate(candidateId, candidateDto);
+
+        verify(candidateService, times(1)).patchCandidate(candidateId, candidateDto);
     }
 }

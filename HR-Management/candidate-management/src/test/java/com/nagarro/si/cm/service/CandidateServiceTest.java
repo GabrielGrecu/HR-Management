@@ -5,6 +5,7 @@ import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.cm.exception.ResourceNotFoundException;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import com.nagarro.si.cm.util.CandidateMapper;
+import com.nagarro.si.cm.util.CandidateValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,6 +41,9 @@ public class CandidateServiceTest {
 
     @Mock
     private CandidateMapper candidateMapper;
+
+    @Mock
+    private CandidateValidator candidateValidator;
 
     @InjectMocks
     private CandidateServiceImpl candidateService;
@@ -218,5 +223,83 @@ public class CandidateServiceTest {
         assertEquals("No candidates were found matching the provided filters", thrown.getMessage());
         verify(candidateRepository, times(1)).findAll(any(Specification.class));
         verify(candidateMapper, never()).toDTO(any(Candidate.class));
+    }
+
+    @Test
+    public void testDeleteCandidateById() {
+        int candidateId = 1;
+        when(candidateRepository.existsCandidateById(candidateId)).thenReturn(true);
+
+        candidateService.deleteCandidateById(candidateId);
+
+        verify(candidateRepository, times(1)).deleteById(candidateId);
+    }
+
+    @Test
+    public void testDeleteCandidateByIdNotFound() {
+        int candidateId = 1;
+        when(candidateRepository.existsCandidateById(candidateId)).thenReturn(false);
+
+        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> {
+            candidateService.deleteCandidateById(candidateId);
+        });
+
+        assertEquals("candidate with id [1] not found", thrown.getMessage());
+        verify(candidateRepository, times(1)).existsCandidateById(candidateId);
+        verify(candidateRepository, never()).deleteById(candidateId);
+    }
+
+    @Test
+    public void testUpdateCandidate() throws ParseException {
+        int candidateId = 1;
+        when(candidateRepository.findById(candidateId)).thenReturn(Optional.of(candidate1));
+        doNothing().when(candidateValidator).updateCandidateFields(candidate1, candidateDto1);
+
+        candidateService.updateCandidate(candidateId, candidateDto1);
+
+        verify(candidateRepository, times(1)).findById(candidateId);
+        verify(candidateValidator, times(1)).updateCandidateFields(candidate1, candidateDto1);
+        verify(candidateRepository, times(1)).save(candidate1);
+    }
+
+    @Test
+    public void testUpdateCandidateNotFound() {
+        int candidateId = 1;
+        when(candidateRepository.findById(candidateId)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> {
+            candidateService.updateCandidate(candidateId, candidateDto1);
+        });
+
+        assertEquals("Candidate with id [1] not found", thrown.getMessage());
+        verify(candidateRepository, times(1)).findById(candidateId);
+        verify(candidateRepository, never()).save(any(Candidate.class));
+    }
+
+    @Test
+    public void testPatchCandidate() throws ParseException {
+        int candidateId = 1;
+        when(candidateRepository.findById(candidateId)).thenReturn(Optional.of(candidate1));
+        doNothing().when(candidateValidator).updateCandidateFields(candidate1, candidateDto1);
+
+        candidateService.patchCandidate(candidateId, candidateDto1);
+
+        verify(candidateRepository, times(1)).findById(candidateId);
+        verify(candidateValidator, times(1)).updateCandidateFields(candidate1, candidateDto1);
+        verify(candidateRepository, times(1)).save(candidate1);
+    }
+
+    @Test
+    public void testPatchCandidateNotFound() {
+        int candidateId = 1;
+        when(candidateRepository.findById(candidateId)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> {
+            candidateService.patchCandidate(candidateId, candidateDto1);
+        });
+
+        assertEquals("Candidate with id [1] not found", thrown.getMessage());
+        verify(candidateRepository, times(1)).findById(candidateId);
+        verify(candidateRepository, never()).save(any(Candidate.class));
     }
 }
