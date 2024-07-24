@@ -3,6 +3,7 @@ package com.nagarro.si.um.service;
 import com.nagarro.si.um.dto.UserDTO;
 import com.nagarro.si.um.entity.Role;
 import com.nagarro.si.um.entity.User;
+import com.nagarro.si.um.exception.EntityAlreadyExistsException;
 import com.nagarro.si.um.exception.EntityNotFoundException;
 import com.nagarro.si.um.mapper.UserMapper;
 import com.nagarro.si.um.repository.RoleRepository;
@@ -25,6 +26,10 @@ public class UserService {
     }
 
     public UserDTO createUser(UserDTO userDTO) {
+        if (userRepository.findByEmail(userDTO.email()).isPresent()) {
+            throw new EntityAlreadyExistsException("User with email " + userDTO.email() + " already exists");
+        }
+
         Role role = roleRepository.findById(userDTO.roleId())
                 .orElseThrow(() -> new EntityNotFoundException("Role with ID " + userDTO.roleId() + " not found"));
 
@@ -45,10 +50,7 @@ public class UserService {
         Role role = roleRepository.findById(userDTO.roleId())
                 .orElseThrow(() -> new EntityNotFoundException("Role with ID " + userDTO.roleId() + " not found"));
 
-        user.setUsername(userDTO.username());
-        user.setEmail(userDTO.email());
-        user.setPassword(userDTO.password());
-        user.setRole(role);
+        userMapper.updateUserFromDTO(user, userDTO, role);
 
         User updatedUser = userRepository.save(user);
         return userMapper.toUserDTO(updatedUser);
