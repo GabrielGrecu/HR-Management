@@ -5,13 +5,17 @@ import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.cm.exception.ResourceNotFoundException;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import com.nagarro.si.cm.util.CandidateMapper;
+import com.nagarro.si.cm.util.CandidateSpecification;
 import com.nagarro.si.cm.util.CandidateValidator;
 import com.nagarro.si.cm.util.ValidatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class CandidateServiceImpl implements CandidateService {
@@ -55,12 +59,30 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
+    public CandidateDto getCandidateByUsername(String username) {
+        Candidate candidate = candidateRepository.getCandidateByUsername(username).
+                orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("Candidate with username = %s not found", username)
+                ));
+        return candidateMapper.toDTO(candidate);
+    }
+
+    public List<CandidateDto> filterCandidatesByAnyField(Map<String, Object> filters) {
+        Specification<Candidate> spec = CandidateSpecification.createDynamicSearchSpecification(filters);
+        List<Candidate> candidates = candidateRepository.findAll(spec);
+        if(candidates.isEmpty()) {
+            throw new ResourceNotFoundException("No candidates were found matching the provided filters");
+        }
+        return candidates.stream().map(candidateMapper::toDTO).collect(Collectors.toList());
+    }
+
+    @Override
     public void deleteCandidateById(int candidateId) {
-        checkIfcandidateExistsOrThrow(candidateId);
+        checkIfCandidateExistsOrThrow(candidateId);
         candidateRepository.deleteById(candidateId);
     }
 
-    private void checkIfcandidateExistsOrThrow(int candidateId) {
+    private void checkIfCandidateExistsOrThrow(int candidateId) {
         if (!candidateRepository.existsCandidateById(candidateId)) {
             throw new ResourceNotFoundException(
                     "candidate with id [%s] not found".formatted(candidateId)
