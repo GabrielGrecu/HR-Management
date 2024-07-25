@@ -1,7 +1,7 @@
 package com.nagarro.si.cm.exception;
 
-public class DuplicateResourceException extends RuntimeException {
-    public DuplicateResourceException(String message) {
+public class EntityAlreadyExistsException extends RuntimeException {
+    public EntityAlreadyExistsException(String message) {
         super(message);
     }
 }
