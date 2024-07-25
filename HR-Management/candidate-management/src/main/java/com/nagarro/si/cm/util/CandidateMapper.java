@@ -36,4 +36,15 @@ public class CandidateMapper {
                 candidate.getRecruitmentChannel()
         );
     }
+
+    public void updateCandidateFromDto(Candidate candidate, CandidateDto candidateDto) {
+        candidate.setUsername(candidateDto.getUsername());
+        candidate.setBirthday(Date.valueOf(candidateDto.getBirthday()));
+        candidate.setEmail(candidateDto.getEmail());
+        candidate.setCity(candidateDto.getCity());
+        candidate.setFaculty(candidateDto.getFaculty());
+        candidate.setPhoneNumber(candidateDto.getPhoneNumber());
+        candidate.setYearsOfExperience(candidateDto.getYearsOfExperience());
+        candidate.setRecruitmentChannel(candidateDto.getRecruitmentChannel());
+    }
 }
