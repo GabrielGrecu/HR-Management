@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -19,8 +21,8 @@ public class CandidateDto {
     private String username;
 
     @PastOrPresent(message = "Birthday must be in the past or present")
-    @NotBlank(message = "Birthday is required")
-    private String birthday;
+    @NotNull(message = "Birthday is required")
+    private LocalDate birthday;
 
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is required")

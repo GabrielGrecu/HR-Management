@@ -4,6 +4,7 @@ import com.nagarro.si.cm.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.cm.exception.EntityAlreadyExistsException;
 import com.nagarro.si.cm.exception.EntityNotFoundException;
+import com.nagarro.si.cm.exception.InvalidBirthdayException;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import com.nagarro.si.cm.util.CandidateMapper;
 import com.nagarro.si.cm.util.CandidateSpecification;
@@ -12,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,6 +42,10 @@ public class CandidateServiceImpl implements CandidateService {
 
         if (candidateRepository.existsCandidateByPhoneNumber(candidateDto.getPhoneNumber())) {
             throw new EntityAlreadyExistsException("Candidate with phone number " + candidateDto.getPhoneNumber() + " already exists");
+        }
+
+        if (candidateDto.getBirthday().isAfter(LocalDate.now())) {
+            throw new InvalidBirthdayException("Birthday cannot be in the future");
         }
 
         Candidate candidate = candidateMapper.toCandidate(candidateDto);
@@ -110,6 +116,10 @@ public class CandidateServiceImpl implements CandidateService {
             throw new EntityAlreadyExistsException("Candidate with phone number " + candidateDto.getPhoneNumber() + " already exists");
         }
 
+        if (candidateDto.getBirthday() != null && candidateDto.getBirthday().isAfter(LocalDate.now())) {
+            throw new InvalidBirthdayException("Birthday cannot be in the future");
+        }
+
         candidateMapper.updateCandidateFromDto(candidate, candidateDto);
         candidateRepository.save(candidate);
     }
@@ -133,6 +143,10 @@ public class CandidateServiceImpl implements CandidateService {
         if (updateRequest.getPhoneNumber() != null && !updateRequest.getPhoneNumber().equals(candidate.getPhoneNumber()) &&
                 candidateRepository.existsCandidateByPhoneNumber(updateRequest.getPhoneNumber())) {
             throw new EntityAlreadyExistsException("Candidate with phone number " + updateRequest.getPhoneNumber() + " already exists");
+        }
+
+        if (updateRequest.getBirthday() != null && updateRequest.getBirthday().isAfter(LocalDate.now())) {
+            throw new InvalidBirthdayException("Birthday cannot be in the future");
         }
 
         if (updateRequest.getUsername() != null) {
