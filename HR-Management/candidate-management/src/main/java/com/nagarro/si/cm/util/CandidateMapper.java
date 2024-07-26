@@ -17,6 +17,7 @@ public class CandidateMapper {
         candidate.setBirthday(convertToDate(candidateDto.getBirthday()));
         candidate.setEmail(candidateDto.getEmail());
         candidate.setCity(candidateDto.getCity());
+        candidate.setAddress(candidateDto.getAddress());
         candidate.setFaculty(candidateDto.getFaculty());
         candidate.setPhoneNumber(candidateDto.getPhoneNumber());
         candidate.setYearsOfExperience(candidateDto.getYearsOfExperience());
@@ -31,6 +32,7 @@ public class CandidateMapper {
                 convertToLocalDate(candidate.getBirthday()),
                 candidate.getEmail(),
                 candidate.getCity(),
+                candidate.getAddress(),
                 candidate.getFaculty(),
                 candidate.getPhoneNumber(),
                 candidate.getYearsOfExperience(),

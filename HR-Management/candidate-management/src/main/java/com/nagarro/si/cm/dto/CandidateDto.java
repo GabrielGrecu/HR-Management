@@ -1,5 +1,6 @@
 package com.nagarro.si.cm.dto;
 
+import com.nagarro.si.cm.validator.CityAddressConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@CityAddressConstraint
 public class CandidateDto {
     private int id;
 
@@ -29,6 +31,8 @@ public class CandidateDto {
     private String email;
 
     private String city;
+
+    private String address;
 
     private String faculty;
 
