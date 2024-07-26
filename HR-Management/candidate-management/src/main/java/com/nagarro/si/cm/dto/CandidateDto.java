@@ -3,6 +3,7 @@ package com.nagarro.si.cm.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class CandidateDto {
     @NotBlank(message = "Username is required")
     private String username;
 
+    @PastOrPresent(message = "Birthday must be in the past or present")
     @NotBlank(message = "Birthday is required")
     private String birthday;
 

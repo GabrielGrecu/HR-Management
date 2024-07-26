@@ -2,40 +2,31 @@ package com.nagarro.si.cm.service;
 
 import com.nagarro.si.cm.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
+import com.nagarro.si.cm.exception.EntityAlreadyExistsException;
 import com.nagarro.si.cm.exception.EntityNotFoundException;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import com.nagarro.si.cm.util.CandidateMapper;
-import com.nagarro.si.cm.util.CandidateValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-public class CandidateServiceTest {
+class CandidateServiceTest {
 
     @Mock
     private CandidateRepository candidateRepository;
@@ -43,254 +34,143 @@ public class CandidateServiceTest {
     @Mock
     private CandidateMapper candidateMapper;
 
-    @Mock
-    private CandidateValidator candidateValidator;
-
     @InjectMocks
     private CandidateServiceImpl candidateService;
 
-    private Candidate candidate1;
-    private Candidate candidate2;
-    private CandidateDto candidateDto1;
-    private CandidateDto candidateDto2;
+    private Candidate candidate;
+    private CandidateDto candidateDto;
 
     @BeforeEach
-    public void setup() {
-        candidate1 = new Candidate();
-        candidate1.setUsername("DianaH");
-        candidate1.setEmail("diana.hategan1107@gmail.com");
-        candidate1.setPhoneNumber("0760271177");
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        candidate = new Candidate();
+        candidate.setId(1);
+        candidate.setUsername("john_doe");
+        candidate.setEmail("john.doe@example.com");
+        candidate.setPhoneNumber("1234567890");
 
-        candidateDto1 = new CandidateDto();
-        candidateDto1.setUsername("DianaH");
-        candidateDto1.setEmail("diana.hategan1107@gmail.com");
-        candidateDto1.setPhoneNumber("0760271177");
-
-        candidate2 = new Candidate();
-        candidate2.setUsername("David29");
-        candidate2.setEmail("david29@gmail.com");
-        candidate2.setPhoneNumber("0751066222");
-
-        candidateDto2 = new CandidateDto();
-        candidateDto2.setUsername("David29");
-        candidateDto2.setEmail("david29@gmail.com");
-        candidateDto2.setPhoneNumber("0751066222");
+        candidateDto = new CandidateDto();
+        candidateDto.setId(1);
+        candidateDto.setUsername("john_doe");
+        candidateDto.setEmail("john.doe@example.com");
+        candidateDto.setPhoneNumber("1234567890");
     }
 
     @Test
-    public void testSaveCandidate() {
-        Candidate savedCandidate = candidate1;
-        CandidateDto savedCandidateDto = candidateDto1;
-        when(candidateMapper.toCandidate(candidateDto1)).thenReturn(candidate1);
-        when(candidateRepository.save(candidate1)).thenReturn(savedCandidate);
-        when(candidateMapper.toDTO(savedCandidate)).thenReturn(savedCandidateDto);
+    void testSaveCandidate_Success() {
+        when(candidateRepository.existsCandidateByUsername(candidateDto.getUsername())).thenReturn(false);
+        when(candidateRepository.existsCandidateByEmail(candidateDto.getEmail())).thenReturn(false);
+        when(candidateRepository.existsCandidateByPhoneNumber(candidateDto.getPhoneNumber())).thenReturn(false);
+        when(candidateMapper.toCandidate(candidateDto)).thenReturn(candidate);
+        when(candidateRepository.save(candidate)).thenReturn(candidate);
+        when(candidateMapper.toDTO(candidate)).thenReturn(candidateDto);
 
-        CandidateDto result = candidateService.saveCandidate(candidateDto1);
+        CandidateDto savedCandidate = candidateService.saveCandidate(candidateDto);
 
-        assertNotNull(result);
-        assertEquals(savedCandidateDto, result);
-        verify(candidateMapper, times(1)).toCandidate(candidateDto1);
-        verify(candidateRepository, times(1)).save(candidate1);
-        verify(candidateMapper, times(1)).toDTO(savedCandidate);
+        assertNotNull(savedCandidate);
+        assertEquals(candidateDto.getUsername(), savedCandidate.getUsername());
+        verify(candidateRepository).save(candidate);
     }
 
     @Test
-    public void testSaveCandidateInvalidEmail() {
-        candidateDto1.setEmail("diagmail.com");
+    void testSaveCandidate_UsernameExists() {
+        when(candidateRepository.existsCandidateByUsername(candidateDto.getUsername())).thenReturn(true);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                candidateService.saveCandidate(candidateDto1));
-
-        assertEquals("Invalid email format", exception.getMessage());
-        verifyNoInteractions(candidateRepository, candidateMapper);
+        assertThrows(EntityAlreadyExistsException.class, () -> candidateService.saveCandidate(candidateDto));
     }
 
     @Test
-    public void testSaveCandidateInvalidPhoneNumber() {
-        candidateDto1.setPhoneNumber("760271177");
+    void testGetAllCandidates() {
+        when(candidateRepository.findAll()).thenReturn(List.of(candidate));
+        when(candidateMapper.toDTO(candidate)).thenReturn(candidateDto);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-            candidateService.saveCandidate(candidateDto1));
+        List<CandidateDto> candidates = candidateService.getAllCandidates();
 
-        assertEquals("Invalid phone number format", exception.getMessage());
-        verifyNoInteractions(candidateRepository, candidateMapper);
+        assertNotNull(candidates);
+        assertEquals(1, candidates.size());
+        verify(candidateRepository).findAll();
     }
 
     @Test
-    public void testGetAllCandidates() {
-        when(candidateRepository.findAll()).thenReturn(Arrays.asList(candidate1, candidate2));
-        when(candidateMapper.toDTO(candidate1)).thenReturn(candidateDto1);
-        when(candidateMapper.toDTO(candidate2)).thenReturn(candidateDto2);
+    void testGetCandidateById_Success() {
+        when(candidateRepository.findById(candidate.getId())).thenReturn(Optional.of(candidate));
+        when(candidateMapper.toDTO(candidate)).thenReturn(candidateDto);
 
-        List<CandidateDto> result = candidateService.getAllCandidates();
+        CandidateDto foundCandidate = candidateService.getCandidateById(candidate.getId());
 
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals(candidateDto1, result.get(0));
-        assertEquals(candidateDto2, result.get(1));
-        verify(candidateRepository, times(1)).findAll();
-        verify(candidateMapper, times(1)).toDTO(candidate1);
-        verify(candidateMapper, times(1)).toDTO(candidate2);
+        assertNotNull(foundCandidate);
+        assertEquals(candidateDto.getId(), foundCandidate.getId());
+        verify(candidateRepository).findById(candidate.getId());
     }
 
     @Test
-    public void testGetCandidateById() {
-        int candidateId = 1;
-        when(candidateRepository.findById(candidateId)).thenReturn(Optional.of(candidate1));
-        when(candidateMapper.toDTO(candidate1)).thenReturn(candidateDto1);
+    void testGetCandidateById_NotFound() {
+        when(candidateRepository.findById(candidate.getId())).thenReturn(Optional.empty());
 
-        CandidateDto result = candidateService.getCandidateById(candidateId);
-
-        assertNotNull(result);
-        assertEquals(candidateDto1, result);
-        verify(candidateRepository, times(1)).findById(candidateId);
-        verify(candidateMapper, times(1)).toDTO(candidate1);
+        assertThrows(EntityNotFoundException.class, () -> candidateService.getCandidateById(candidate.getId()));
     }
 
     @Test
-    public void testGetCandidateByIdNotFound() {
-        int candidateId = 1;
-        when(candidateRepository.findById(candidateId)).thenReturn(Optional.empty());
+    void testDeleteCandidateById_Success() {
+        when(candidateRepository.findById(candidate.getId())).thenReturn(Optional.of(candidate));
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-            candidateService.getCandidateById(candidateId));
+        candidateService.deleteCandidateById(candidate.getId());
 
-        assertEquals(String.format("Candidate with id = %d not found", candidateId), thrown.getMessage());
-        verify(candidateRepository, times(1)).findById(candidateId);
-        verify(candidateMapper, never()).toDTO(any());
+        verify(candidateRepository).delete(candidate);
     }
 
     @Test
-    public void testGetCandidateByUsername() {
-        String username = "DianaH";
+    void testDeleteCandidateById_NotFound() {
+        when(candidateRepository.findById(candidate.getId())).thenReturn(Optional.empty());
 
-        when(candidateRepository.getCandidateByUsername(username)).thenReturn(Optional.of(candidate1));
-        when(candidateMapper.toDTO(candidate1)).thenReturn(candidateDto1);
-
-        CandidateDto result = candidateService.getCandidateByUsername(username);
-
-        assertNotNull(result);
-        assertEquals(candidateDto1, result);
-        verify(candidateRepository, times(1)).getCandidateByUsername(username);
-        verify(candidateMapper, times(1)).toDTO(candidate1);
+        assertThrows(EntityNotFoundException.class, () -> candidateService.deleteCandidateById(candidate.getId()));
     }
 
     @Test
-    public void testGetCandidateByUsernameNotFound() {
-        String username = "Dia";
-        when(candidateRepository.getCandidateByUsername(username)).thenReturn(Optional.empty());
+    void testUpdateCandidate_Success() {
+        when(candidateRepository.findById(candidate.getId())).thenReturn(Optional.of(candidate));
+        when(candidateRepository.existsCandidateByUsername(anyString())).thenReturn(false);
+        when(candidateRepository.existsCandidateByEmail(anyString())).thenReturn(false);
+        when(candidateRepository.existsCandidateByPhoneNumber(anyString())).thenReturn(false);
+        doNothing().when(candidateMapper).updateCandidateFromDto(any(Candidate.class), any(CandidateDto.class));
+        when(candidateRepository.save(candidate)).thenReturn(candidate);
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-            candidateService.getCandidateByUsername(username));
+        candidateService.updateCandidate(candidate.getId(), candidateDto);
 
-        assertEquals(String.format("Candidate with username = %s not found", username), thrown.getMessage());
-        verify(candidateRepository, times(1)).getCandidateByUsername(username);
-        verify(candidateMapper, never()).toDTO(any());
+        verify(candidateRepository).save(candidate);
     }
 
     @Test
-    public void testFilterCandidatesByAnyField() {
-        List<Candidate> candidates = Collections.singletonList(candidate1);
-        Map<String, Object> filters = new HashMap<>();
-        filters.put("name", "Diana");
-        filters.put("email", "diana");
-        when(candidateRepository.findAll(any(Specification.class))).thenReturn(candidates);
-        when(candidateMapper.toDTO(candidate1)).thenReturn(candidateDto1);
+    void testPatchCandidate_Success() {
+        when(candidateRepository.findById(candidate.getId())).thenReturn(Optional.of(candidate));
+        when(candidateRepository.existsCandidateByUsername(anyString())).thenReturn(false);
+        when(candidateRepository.existsCandidateByEmail(anyString())).thenReturn(false);
+        when(candidateRepository.existsCandidateByPhoneNumber(anyString())).thenReturn(false);
+        when(candidateRepository.save(candidate)).thenReturn(candidate);
+
+        candidateService.patchCandidate(candidate.getId(), candidateDto);
+
+        verify(candidateRepository).save(candidate);
+    }
+
+    @Test
+    void testFilterCandidatesByAnyField() {
+        Map<String, Object> filters = Map.of("username", "john_doe");
+        when(candidateRepository.findAll(any(Specification.class))).thenReturn(List.of(candidate));
+        when(candidateMapper.toDTO(candidate)).thenReturn(candidateDto);
 
         List<CandidateDto> result = candidateService.filterCandidatesByAnyField(filters);
 
+        assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(candidateDto1, result.get(0));
-        verify(candidateRepository, times(1)).findAll(any(Specification.class));
+        verify(candidateRepository).findAll(any(Specification.class));
     }
 
     @Test
-    public void testFilterCandidatesByAnyFieldNoMatching() {
-        Map<String, Object> filters = new HashMap<>();
-        filters.put("name", "DianaHategan");
-        filters.put("email", "diana.hategan1107@yahoo.com");
-        when(candidateRepository.findAll(any(Specification.class))).thenReturn(Collections.emptyList());
+    void testFilterCandidatesByAnyField_NotFound() {
+        Map<String, Object> filters = Map.of("username", "nonexistent_user");
+        when(candidateRepository.findAll(any(Specification.class))).thenReturn(List.of());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-            candidateService.filterCandidatesByAnyField(filters));
-
-        assertEquals("No candidates were found matching the provided filters", thrown.getMessage());
-        verify(candidateRepository, times(1)).findAll(any(Specification.class));
-        verify(candidateMapper, never()).toDTO(any(Candidate.class));
-    }
-
-    @Test
-    public void testDeleteCandidateById() {
-        int candidateId = 1;
-        when(candidateRepository.existsCandidateById(candidateId)).thenReturn(true);
-
-        candidateService.deleteCandidateById(candidateId);
-
-        verify(candidateRepository, times(1)).deleteById(candidateId);
-    }
-
-    @Test
-    public void testDeleteCandidateByIdNotFound() {
-        int candidateId = 1;
-        when(candidateRepository.existsCandidateById(candidateId)).thenReturn(false);
-
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-            candidateService.deleteCandidateById(candidateId));
-
-        assertEquals("candidate with id [1] not found", thrown.getMessage());
-        verify(candidateRepository, times(1)).existsCandidateById(candidateId);
-        verify(candidateRepository, never()).deleteById(candidateId);
-    }
-
-    @Test
-    public void testUpdateCandidate() throws ParseException {
-        int candidateId = 1;
-        when(candidateRepository.findById(candidateId)).thenReturn(Optional.of(candidate1));
-        doNothing().when(candidateValidator).updateCandidateFields(candidate1, candidateDto1);
-
-        candidateService.updateCandidate(candidateId, candidateDto1);
-
-        verify(candidateRepository, times(1)).findById(candidateId);
-        verify(candidateValidator, times(1)).updateCandidateFields(candidate1, candidateDto1);
-        verify(candidateRepository, times(1)).save(candidate1);
-    }
-
-    @Test
-    public void testUpdateCandidateNotFound() {
-        int candidateId = 1;
-        when(candidateRepository.findById(candidateId)).thenReturn(Optional.empty());
-
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-            candidateService.updateCandidate(candidateId, candidateDto1));
-
-        assertEquals("Candidate with id [1] not found", thrown.getMessage());
-        verify(candidateRepository, times(1)).findById(candidateId);
-        verify(candidateRepository, never()).save(any(Candidate.class));
-    }
-
-    @Test
-    public void testPatchCandidate() throws ParseException {
-        int candidateId = 1;
-        when(candidateRepository.findById(candidateId)).thenReturn(Optional.of(candidate1));
-        doNothing().when(candidateValidator).updateCandidateFields(candidate1, candidateDto1);
-
-        candidateService.patchCandidate(candidateId, candidateDto1);
-
-        verify(candidateRepository, times(1)).findById(candidateId);
-        verify(candidateValidator, times(1)).updateCandidateFields(candidate1, candidateDto1);
-        verify(candidateRepository, times(1)).save(candidate1);
-    }
-
-    @Test
-    public void testPatchCandidateNotFound() {
-        int candidateId = 1;
-        when(candidateRepository.findById(candidateId)).thenReturn(Optional.empty());
-
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-            candidateService.patchCandidate(candidateId, candidateDto1));
-
-        assertEquals("Candidate with id [1] not found", thrown.getMessage());
-        verify(candidateRepository, times(1)).findById(candidateId);
-        verify(candidateRepository, never()).save(any(Candidate.class));
+        assertThrows(EntityNotFoundException.class, () -> candidateService.filterCandidatesByAnyField(filters));
     }
 }

@@ -16,12 +16,12 @@ public class UserMapper {
                 user.getRole().getRoleId()
         );
     }
-    public User updateUserFromDTO(User user, UserDTO userDTO, Role role) {
+
+    public void updateUserFromDTO(User user, UserDTO userDTO, Role role) {
         user.setUsername(userDTO.username());
         user.setEmail(userDTO.email());
         user.setPassword(userDTO.password());
         user.setRole(role);
-        return user;
     }
 
     public User toUser(UserDTO userDTO, Role role) {
