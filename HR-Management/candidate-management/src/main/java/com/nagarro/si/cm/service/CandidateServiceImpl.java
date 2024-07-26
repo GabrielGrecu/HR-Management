@@ -3,7 +3,7 @@ package com.nagarro.si.cm.service;
 import com.nagarro.si.cm.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.cm.exception.EntityAlreadyExistsException;
-import com.nagarro.si.cm.exception.ResourceNotFoundException;
+import com.nagarro.si.cm.exception.EntityNotFoundException;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import com.nagarro.si.cm.util.CandidateMapper;
 import com.nagarro.si.cm.util.CandidateSpecification;
@@ -38,6 +38,10 @@ public class CandidateServiceImpl implements CandidateService {
             throw new EntityAlreadyExistsException("Candidate with email " + candidateDto.getEmail() + " already exists");
         }
 
+        if (candidateRepository.existsCandidateByPhoneNumber(candidateDto.getPhoneNumber())) {
+            throw new EntityAlreadyExistsException("Candidate with phone number " + candidateDto.getPhoneNumber() + " already exists");
+        }
+
         Candidate candidate = candidateMapper.toCandidate(candidateDto);
         Candidate savedCandidate = candidateRepository.save(candidate);
         return candidateMapper.toDTO(savedCandidate);
@@ -54,7 +58,7 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public CandidateDto getCandidateById(int candidateId) {
         Candidate candidate = candidateRepository.findById(candidateId)
-                .orElseThrow(() -> new ResourceNotFoundException(
+                .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Candidate with id = %d not found", candidateId)
                 ));
         return candidateMapper.toDTO(candidate);
@@ -63,7 +67,7 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public CandidateDto getCandidateByUsername(String username) {
         Candidate candidate = candidateRepository.getCandidateByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException(
+                .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Candidate with username = %s not found", username)
                 ));
         return candidateMapper.toDTO(candidate);
@@ -74,7 +78,7 @@ public class CandidateServiceImpl implements CandidateService {
         Specification<Candidate> spec = CandidateSpecification.createDynamicSearchSpecification(filters);
         List<Candidate> candidates = candidateRepository.findAll(spec);
         if (candidates.isEmpty()) {
-            throw new ResourceNotFoundException("No candidates were found matching the provided filters");
+            throw new EntityNotFoundException("No candidates were found matching the provided filters");
         }
         return candidates.stream().map(candidateMapper::toDTO).collect(Collectors.toList());
     }
@@ -82,14 +86,14 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public void deleteCandidateById(int candidateId) {
         Candidate candidate = candidateRepository.findById(candidateId)
-                .orElseThrow(() -> new ResourceNotFoundException("Candidate with id [" + candidateId + "] not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Candidate with id [" + candidateId + "] not found"));
         candidateRepository.delete(candidate);
     }
 
     @Override
     public void updateCandidate(Integer candidateId, CandidateDto candidateDto) {
         Candidate candidate = candidateRepository.findById(candidateId)
-                .orElseThrow(() -> new ResourceNotFoundException("Candidate with id [%s] not found".formatted(candidateId)));
+                .orElseThrow(() -> new EntityNotFoundException("Candidate with id [%s] not found".formatted(candidateId)));
 
         if (candidateDto.getUsername() != null && !candidateDto.getUsername().equals(candidate.getUsername()) &&
                 candidateRepository.existsCandidateByUsername(candidateDto.getUsername())) {
@@ -101,6 +105,11 @@ public class CandidateServiceImpl implements CandidateService {
             throw new EntityAlreadyExistsException("Candidate with email " + candidateDto.getEmail() + " already exists");
         }
 
+        if (candidateDto.getPhoneNumber() != null && !candidateDto.getPhoneNumber().equals(candidate.getPhoneNumber()) &&
+                candidateRepository.existsCandidateByPhoneNumber(candidateDto.getPhoneNumber())) {
+            throw new EntityAlreadyExistsException("Candidate with phone number " + candidateDto.getPhoneNumber() + " already exists");
+        }
+
         candidateMapper.updateCandidateFromDto(candidate, candidateDto);
         candidateRepository.save(candidate);
     }
@@ -108,7 +117,7 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public void patchCandidate(Integer candidateId, CandidateDto updateRequest) {
         Candidate candidate = candidateRepository.findById(candidateId)
-                .orElseThrow(() -> new ResourceNotFoundException("Candidate with id [%s] not found".formatted(candidateId)));
+                .orElseThrow(() -> new EntityNotFoundException("Candidate with id [%s] not found".formatted(candidateId)));
 
         //Moved candidateValidator.validateFields
         if (updateRequest.getUsername() != null && !updateRequest.getUsername().equals(candidate.getUsername()) &&
@@ -119,6 +128,11 @@ public class CandidateServiceImpl implements CandidateService {
         if (updateRequest.getEmail() != null && !updateRequest.getEmail().equals(candidate.getEmail()) &&
                 candidateRepository.existsCandidateByEmail(updateRequest.getEmail())) {
             throw new EntityAlreadyExistsException("Candidate with email " + updateRequest.getEmail() + " already exists");
+        }
+
+        if (updateRequest.getPhoneNumber() != null && !updateRequest.getPhoneNumber().equals(candidate.getPhoneNumber()) &&
+                candidateRepository.existsCandidateByPhoneNumber(updateRequest.getPhoneNumber())) {
+            throw new EntityAlreadyExistsException("Candidate with phone number " + updateRequest.getPhoneNumber() + " already exists");
         }
 
         if (updateRequest.getUsername() != null) {

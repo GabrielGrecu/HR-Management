@@ -28,7 +28,7 @@ public class CandidateDto {
 
     private String faculty;
 
-    @Pattern(regexp = "^([+]|0{1})\\d{1,14}$", message = "Phone number is not valid")
+    @Pattern(regexp = "^([+]|0)\\d{1,14}$", message = "Phone number is not valid")
     private String phoneNumber;
 
     @NotNull(message = "Years of experience is required")

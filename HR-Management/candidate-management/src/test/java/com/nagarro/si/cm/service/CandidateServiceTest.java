@@ -2,7 +2,7 @@ package com.nagarro.si.cm.service;
 
 import com.nagarro.si.cm.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
-import com.nagarro.si.cm.exception.ResourceNotFoundException;
+import com.nagarro.si.cm.exception.EntityNotFoundException;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import com.nagarro.si.cm.util.CandidateMapper;
 import com.nagarro.si.cm.util.CandidateValidator;
@@ -152,7 +152,7 @@ public class CandidateServiceTest {
         int candidateId = 1;
         when(candidateRepository.findById(candidateId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
             candidateService.getCandidateById(candidateId));
 
         assertEquals(String.format("Candidate with id = %d not found", candidateId), thrown.getMessage());
@@ -180,7 +180,7 @@ public class CandidateServiceTest {
         String username = "Dia";
         when(candidateRepository.getCandidateByUsername(username)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
             candidateService.getCandidateByUsername(username));
 
         assertEquals(String.format("Candidate with username = %s not found", username), thrown.getMessage());
@@ -211,7 +211,7 @@ public class CandidateServiceTest {
         filters.put("email", "diana.hategan1107@yahoo.com");
         when(candidateRepository.findAll(any(Specification.class))).thenReturn(Collections.emptyList());
 
-        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
             candidateService.filterCandidatesByAnyField(filters));
 
         assertEquals("No candidates were found matching the provided filters", thrown.getMessage());
@@ -234,7 +234,7 @@ public class CandidateServiceTest {
         int candidateId = 1;
         when(candidateRepository.existsCandidateById(candidateId)).thenReturn(false);
 
-        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
             candidateService.deleteCandidateById(candidateId));
 
         assertEquals("candidate with id [1] not found", thrown.getMessage());
@@ -260,7 +260,7 @@ public class CandidateServiceTest {
         int candidateId = 1;
         when(candidateRepository.findById(candidateId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
             candidateService.updateCandidate(candidateId, candidateDto1));
 
         assertEquals("Candidate with id [1] not found", thrown.getMessage());
@@ -286,7 +286,7 @@ public class CandidateServiceTest {
         int candidateId = 1;
         when(candidateRepository.findById(candidateId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
             candidateService.patchCandidate(candidateId, candidateDto1));
 
         assertEquals("Candidate with id [1] not found", thrown.getMessage());
