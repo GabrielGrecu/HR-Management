@@ -12,18 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class InterviewService {
-    private InterviewRepository interviewRepository;
-    private UserRepository userRepository;
-    private InterviewMapper interviewMapper;
+    private final InterviewRepository interviewRepository;
+    private final UserRepository userRepository;
+    private final InterviewMapper interviewMapper;
 
     @Autowired
     public InterviewService(InterviewRepository interviewRepository, UserRepository userRepository, InterviewMapper interviewMapper) {
@@ -51,13 +50,10 @@ public class InterviewService {
             throw new IllegalArgumentException("Email list must not be null or empty");
         }
 
-        Set<User> users = new HashSet<>();
-        for (String email : emails) {
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new EntityNotFoundException(String.format("User with email = %s not found", email)));
-            users.add(user);
-        }
-        return users;
+        return emails.stream()
+                .map(email -> userRepository.findByEmail(email)
+                        .orElseThrow(() -> new EntityNotFoundException(String.format("User with email = %s not found", email))))
+                .collect(Collectors.toSet());
     }
 
     private void validateDates(Timestamp startDate, Timestamp endDate) {
@@ -87,20 +83,19 @@ public class InterviewService {
     }
 
     private Map<String, Integer> countAttendeesByRole(Set<User> users) {
-        Map<String, Integer> roleCounts = new HashMap<>();
-        for (User user : users) {
-            String roleName = user.getRole().getRoleName();
-            roleCounts.put(roleName, roleCounts.getOrDefault(roleName, 0) + 1);
-        }
-        return roleCounts;
+        return users.stream()
+                .collect(Collectors.groupingBy(
+                        user -> user.getRole().getRoleName(),
+                        Collectors.collectingAndThen(Collectors.counting(), Long::intValue)
+                ));
     }
 
     private void validateAttendeesAlreadyBooked(Set<User> users, Timestamp startDate, Timestamp endDate) {
-        for (User user : users) {
-            List<Interview> overlappingInterviews = interviewRepository.findOverlappingInterviews(user.getUserId(), startDate, endDate);
-            if (!overlappingInterviews.isEmpty()) {
-                throw new IllegalArgumentException(String.format("User with email = %s is already booked for an interview", user.getEmail()));
-            }
-        }
+        users.stream()
+                .filter(user -> !interviewRepository.findOverlappingInterviews(user.getUserId(), startDate, endDate).isEmpty())
+                .findAny()
+                .ifPresent(user -> {
+                    throw new IllegalArgumentException(String.format("User with email = %s is already booked for an interview", user.getEmail()));
+                });
     }
 }

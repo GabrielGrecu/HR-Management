@@ -9,8 +9,10 @@ import java.util.List;
 public record InterviewDTO(
         List<String> attendeesEmails,
         String candidateEmail,
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss") Timestamp startDate,
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss") Timestamp endDate,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        Timestamp startDate,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        Timestamp endDate,
         InterviewType interviewType,
         String description,
         String subject

@@ -18,10 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -46,7 +44,6 @@ public class InterviewServiceTest {
     private InterviewService interviewService;
     private InterviewDTO interviewDTO;
     private Interview interview;
-    private Set<User> users;
     private User pteUser;
     private User hrUser1;
     private User hrUser2;
@@ -72,8 +69,6 @@ public class InterviewServiceTest {
         hrUser2.setUserId(3L);
         hrUser2.setEmail("hr2@yahoo.com");
         hrUser2.setRole(hrRole);
-
-        users = new HashSet<>(Arrays.asList(pteUser, hrUser1, hrUser2));
 
         interviewDTO = new InterviewDTO(
                 Arrays.asList("pte@gmail.com", "hr1@yahoo.com", "hr2@yahoo.com"),
