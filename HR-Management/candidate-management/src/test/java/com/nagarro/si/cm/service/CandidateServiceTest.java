@@ -13,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,11 +51,13 @@ class CandidateServiceTest {
         candidate.setEmail("john.doe@example.com");
         candidate.setPhoneNumber("1234567890");
 
+        candidate.setBirthday(new Date(94, 6, 11));
         candidateDto = new CandidateDto();
         candidateDto.setId(1);
         candidateDto.setUsername("john_doe");
         candidateDto.setEmail("john.doe@example.com");
         candidateDto.setPhoneNumber("1234567890");
+        candidateDto.setBirthday(LocalDate.of(1994, 7, 11));
     }
 
     @Test
