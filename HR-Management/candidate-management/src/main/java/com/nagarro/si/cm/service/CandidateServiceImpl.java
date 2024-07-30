@@ -32,7 +32,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public CandidateDto saveCandidate(CandidateDto candidateDto) {
-        checkValidation(candidateDto,null);
+        checkValidation(candidateDto, null);
 
         Candidate candidate = candidateMapper.toCandidate(candidateDto);
         Candidate savedCandidate = candidateRepository.save(candidate);
