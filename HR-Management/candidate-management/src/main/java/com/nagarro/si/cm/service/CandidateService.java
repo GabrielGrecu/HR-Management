@@ -12,6 +12,7 @@ public interface CandidateService {
 
     List<CandidateDto> getAllCandidates();
 
+    List<CandidateDto> getArchivedCandidates();
     CandidateDto getCandidateById(int candidateId);
 
     CandidateDto getCandidateByUsername(String username);

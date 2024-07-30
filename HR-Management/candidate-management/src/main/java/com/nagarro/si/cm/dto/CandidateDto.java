@@ -1,5 +1,6 @@
 package com.nagarro.si.cm.dto;
 
+import com.nagarro.si.cm.entity.Status;
 import com.nagarro.si.cm.validator.CityAddressConstraint;
 import com.nagarro.si.cm.validator.ValidationGroups;
 import jakarta.validation.constraints.Email;
@@ -42,4 +43,8 @@ public class CandidateDto {
     private Integer yearsOfExperience;
 
     private String recruitmentChannel;
+
+    private String CandidateStatus;
+
+    private String CandidateFeedback;
 }

@@ -41,7 +41,15 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public List<CandidateDto> getAllCandidates() {
-        List<Candidate> candidates = candidateRepository.findAll();
+        List<Candidate> candidates = candidateRepository.findByCandidateStatus("Active");
+        return candidates.stream()
+                .map(candidateMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<CandidateDto> getArchivedCandidates() {
+        List<Candidate> candidates = candidateRepository.findByCandidateStatus("Archived");
         return candidates.stream()
                 .map(candidateMapper::toDTO)
                 .toList();
