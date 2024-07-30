@@ -19,5 +19,5 @@ public record InterviewDTO(
         String description,
         String subject
 ) {
-        public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+        private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 }
