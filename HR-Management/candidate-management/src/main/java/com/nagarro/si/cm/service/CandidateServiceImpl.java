@@ -1,6 +1,6 @@
 package com.nagarro.si.cm.service;
 
-import com.nagarro.si.cm.dto.CandidateDto;
+import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.cm.exception.EntityAlreadyExistsException;
 import com.nagarro.si.cm.exception.EntityNotFoundException;
@@ -61,6 +61,15 @@ public class CandidateServiceImpl implements CandidateService {
         Candidate candidate = candidateRepository.getCandidateByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Candidate with username = %s not found", username)
+                ));
+        return candidateMapper.toDTO(candidate);
+    }
+
+    @Override
+    public CandidateDto getCandidateByEmail(String email) {
+        Candidate candidate = candidateRepository.getCandidateByEmail(email).
+                orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Candidate with email = %s not found", email)
                 ));
         return candidateMapper.toDTO(candidate);
     }

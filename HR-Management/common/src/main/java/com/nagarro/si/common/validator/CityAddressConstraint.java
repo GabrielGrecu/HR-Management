@@ -1,4 +1,4 @@
-package com.nagarro.si.cm.validator;
+package com.nagarro.si.common.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
