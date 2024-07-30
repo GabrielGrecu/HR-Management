@@ -53,13 +53,11 @@ public class Candidate {
     @Column(name = "recruitment_channel")
     private String recruitmentChannel;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "candidate_feedback", nullable = false)
-    private String CandidateFeedback;
+    private String candidateFeedback;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "candidate_status", nullable = false)
-    private String CandidateStatus;
+    private String candidateStatus;
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
     private List<Document> documents;

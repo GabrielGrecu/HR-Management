@@ -44,7 +44,7 @@ public class CandidateDto {
 
     private String recruitmentChannel;
 
-    private String CandidateStatus;
+    private String candidateStatus;
 
-    private String CandidateFeedback;
+    private String candidateFeedback;
 }
