@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -226,7 +225,7 @@ public class InterviewServiceTest {
         when(userRepository.findByEmail("hr2@yahoo.com")).thenReturn(Optional.of(hrUser2));
         Timestamp startDate = Timestamp.valueOf("2024-07-26 14:00:00");
         Timestamp endDate = Timestamp.valueOf("2024-07-26 14:30:00");
-        when(interviewRepository.findOverlappingInterviews(anyLong(), any(Timestamp.class), any(Timestamp.class)))
+        when(interviewRepository.findOverlappingInterviews(3L, startDate, endDate))
                 .thenReturn(List.of(new Interview()));
         InterviewDTO interviewDTOWithOverlap = new InterviewDTO(
                 Arrays.asList("pte@gmail.com", "hr1@yahoo.com", "hr2@yahoo.com"),

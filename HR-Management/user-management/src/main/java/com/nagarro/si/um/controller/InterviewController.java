@@ -19,7 +19,7 @@ public class InterviewController {
         this.interviewService = interviewService;
     }
 
-    @PostMapping("/schedule")
+    @PostMapping
     public InterviewDTO scheduleInterview(@RequestBody InterviewDTO interviewDTO) {
         return interviewService.scheduleInterview(interviewDTO);
     }

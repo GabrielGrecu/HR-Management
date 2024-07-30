@@ -11,25 +11,25 @@ import java.util.stream.Collectors;
 public class InterviewMapper {
 
     public InterviewDTO toInterviewDTO(Interview interview) {
-        return new InterviewDTO(
-                interview.getUsers().stream().map(User::getEmail).collect(Collectors.toList()),
-                interview.getCandidateEmail(),
-                interview.getStartDate(),
-                interview.getEndDate(),
-                interview.getInterviewType(),
-                interview.getDescription(),
-                interview.getSubject()
-        );
+        return InterviewDTO.builder()
+                .attendeesEmails(interview.getUsers().stream().map(User::getEmail).collect(Collectors.toList()))
+                .candidateEmail(interview.getCandidateEmail())
+                .startDate(interview.getStartDate())
+                .endDate(interview.getEndDate())
+                .interviewType(interview.getInterviewType())
+                .description(interview.getDescription())
+                .subject(interview.getSubject())
+                .build();
     }
 
     public Interview toInterview(InterviewDTO interviewDTO) {
-        Interview interview = new Interview();
-        interview.setCandidateEmail(interviewDTO.candidateEmail());
-        interview.setStartDate(interviewDTO.startDate());
-        interview.setEndDate(interviewDTO.endDate());
-        interview.setInterviewType(interviewDTO.interviewType());
-        interview.setDescription(interviewDTO.description());
-        interview.setSubject(interviewDTO.subject());
-        return interview;
+        return Interview.builder()
+                .candidateEmail(interviewDTO.candidateEmail())
+                .startDate(interviewDTO.startDate())
+                .endDate(interviewDTO.endDate())
+                .interviewType(interviewDTO.interviewType())
+                .description(interviewDTO.description())
+                .subject(interviewDTO.subject())
+                .build();
     }
 }
