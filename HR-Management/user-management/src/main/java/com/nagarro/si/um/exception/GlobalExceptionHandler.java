@@ -1,4 +1,4 @@
-package com.nagarro.si.cm.exception;
+package com.nagarro.si.um.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,17 +35,6 @@ public class GlobalExceptionHandler {
                 exception.getMessage()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler(InvalidBirthdayException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidBirthdayException(InvalidBirthdayException exception) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                exception.getMessage()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

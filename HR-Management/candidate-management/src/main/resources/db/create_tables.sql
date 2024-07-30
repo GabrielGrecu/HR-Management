@@ -5,6 +5,7 @@ CREATE TABLE candidate_management.candidate (
 	email VARCHAR(45) NOT NULL UNIQUE,
 	phone_number VARCHAR(45) NOT NULL UNIQUE,
 	city VARCHAR(45) NULL,
+	address VARCHAR(150) NULL,
 	faculty VARCHAR(65) NULL,
 	years_experience INT NULL,
 	recruitment_channel VARCHAR(45) NULL,

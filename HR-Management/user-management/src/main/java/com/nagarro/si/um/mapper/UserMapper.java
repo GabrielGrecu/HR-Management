@@ -17,6 +17,13 @@ public class UserMapper {
         );
     }
 
+    public void updateUserFromDTO(User user, UserDTO userDTO, Role role) {
+        user.setUsername(userDTO.username());
+        user.setEmail(userDTO.email());
+        user.setPassword(userDTO.password());
+        user.setRole(role);
+    }
+
     public User toUser(UserDTO userDTO, Role role) {
         User user = new User();
         user.setUsername(userDTO.username());

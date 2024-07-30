@@ -2,17 +2,18 @@ package com.nagarro.si.cm.service;
 
 import com.nagarro.si.cm.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
-import com.nagarro.si.cm.exception.ResourceNotFoundException;
+import com.nagarro.si.cm.exception.EntityAlreadyExistsException;
+import com.nagarro.si.cm.exception.EntityNotFoundException;
+import com.nagarro.si.cm.exception.InvalidBirthdayException;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import com.nagarro.si.cm.util.CandidateMapper;
 import com.nagarro.si.cm.util.CandidateSpecification;
-import com.nagarro.si.cm.util.CandidateValidator;
-import com.nagarro.si.cm.util.ValidatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,20 +23,17 @@ public class CandidateServiceImpl implements CandidateService {
 
     private final CandidateRepository candidateRepository;
     private final CandidateMapper candidateMapper;
-    private final CandidateValidator candidateValidator;
 
     @Autowired
-    public CandidateServiceImpl(CandidateRepository candidateRepository,
-                                CandidateMapper candidateMapper,
-                                CandidateValidator candidateValidator) {
+    public CandidateServiceImpl(CandidateRepository candidateRepository, CandidateMapper candidateMapper) {
         this.candidateRepository = candidateRepository;
         this.candidateMapper = candidateMapper;
-        this.candidateValidator = candidateValidator;
     }
 
     @Override
     public CandidateDto saveCandidate(CandidateDto candidateDto) {
-        ValidatorUtil.validate(candidateDto);
+        checkValidation(candidateDto, null);
+
         Candidate candidate = candidateMapper.toCandidate(candidateDto);
         Candidate savedCandidate = candidateRepository.save(candidate);
         return candidateMapper.toDTO(savedCandidate);
@@ -51,8 +49,8 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public CandidateDto getCandidateById(int candidateId) {
-        Candidate candidate = candidateRepository.findById(candidateId).
-                orElseThrow(() -> new ResourceNotFoundException(
+        Candidate candidate = candidateRepository.findById(candidateId)
+                .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Candidate with id = %d not found", candidateId)
                 ));
         return candidateMapper.toDTO(candidate);
@@ -60,55 +58,102 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public CandidateDto getCandidateByUsername(String username) {
-        Candidate candidate = candidateRepository.getCandidateByUsername(username).
-                orElseThrow(() -> new ResourceNotFoundException(
+        Candidate candidate = candidateRepository.getCandidateByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Candidate with username = %s not found", username)
                 ));
         return candidateMapper.toDTO(candidate);
     }
 
+    @Override
     public List<CandidateDto> filterCandidatesByAnyField(Map<String, Object> filters) {
         Specification<Candidate> spec = CandidateSpecification.createDynamicSearchSpecification(filters);
         List<Candidate> candidates = candidateRepository.findAll(spec);
-        if(candidates.isEmpty()) {
-            throw new ResourceNotFoundException("No candidates were found matching the provided filters");
+        if (candidates.isEmpty()) {
+            throw new EntityNotFoundException("No candidates were found matching the provided filters");
         }
         return candidates.stream().map(candidateMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
     public void deleteCandidateById(int candidateId) {
-        checkIfCandidateExistsOrThrow(candidateId);
-        candidateRepository.deleteById(candidateId);
+        Candidate candidate = candidateRepository.findById(candidateId)
+                .orElseThrow(() -> new EntityNotFoundException("Candidate with id [" + candidateId + "] not found"));
+        candidateRepository.delete(candidate);
     }
 
-    private void checkIfCandidateExistsOrThrow(int candidateId) {
-        if (!candidateRepository.existsCandidateById(candidateId)) {
-            throw new ResourceNotFoundException(
-                    "candidate with id [%s] not found".formatted(candidateId)
-            );
+    @Override
+    public void updateCandidate(Integer candidateId, CandidateDto candidateDto) {
+        Candidate candidate = candidateRepository.findById(candidateId)
+                .orElseThrow(() -> new EntityNotFoundException("Candidate with id [%s] not found".formatted(candidateId)));
+
+        checkValidation(candidateDto, candidate);
+
+        candidateMapper.updateCandidateFromDto(candidate, candidateDto);
+        candidateRepository.save(candidate);
+    }
+
+    @Override
+    public void patchCandidate(Integer candidateId, CandidateDto updateRequest) {
+        Candidate candidate = candidateRepository.findById(candidateId)
+                .orElseThrow(() -> new EntityNotFoundException("Candidate with id [%s] not found".formatted(candidateId)));
+
+        checkValidation(updateRequest, candidate);
+
+        partialUpdate(updateRequest, candidate);
+
+        candidateRepository.save(candidate);
+    }
+
+    private void partialUpdate(CandidateDto updateRequest, Candidate candidate) {
+        if (updateRequest.getUsername() != null) {
+            candidate.setUsername(updateRequest.getUsername());
+        }
+        if (updateRequest.getBirthday() != null) {
+            candidate.setBirthday(Date.valueOf(updateRequest.getBirthday()));
+        }
+        if (updateRequest.getEmail() != null) {
+            candidate.setEmail(updateRequest.getEmail());
+        }
+        if (updateRequest.getCity() != null) {
+            candidate.setCity(updateRequest.getCity());
+        }
+        if (updateRequest.getFaculty() != null) {
+            candidate.setFaculty(updateRequest.getFaculty());
+        }
+        if (updateRequest.getPhoneNumber() != null) {
+            candidate.setPhoneNumber(updateRequest.getPhoneNumber());
+        }
+        if (updateRequest.getYearsOfExperience() != null) {
+            candidate.setYearsOfExperience(updateRequest.getYearsOfExperience());
+        }
+        if (updateRequest.getRecruitmentChannel() != null) {
+            candidate.setRecruitmentChannel(updateRequest.getRecruitmentChannel());
         }
     }
 
-    public void updateCandidate(Integer candidateId, CandidateDto candidateDto) throws ParseException {
-        Candidate candidate = candidateRepository.findById(candidateId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Candidate with id [%s] not found".formatted(candidateId)));
+    private void checkValidation(CandidateDto candidateDto, Candidate existingCandidate) {
+        if (existingCandidate == null || (candidateDto.getUsername() != null && !candidateDto.getUsername().equals(existingCandidate.getUsername()))) {
+            if (candidateRepository.existsCandidateByUsername(candidateDto.getUsername())) {
+                throw new EntityAlreadyExistsException("Candidate with username " + candidateDto.getUsername() + " already exists");
+            }
+        }
 
-        ValidatorUtil.validate(candidateDto);
-        candidateValidator.updateCandidateFields(candidate, candidateDto);
-        candidateRepository.save(candidate);
-    }
+        if (existingCandidate == null || (candidateDto.getEmail() != null && !candidateDto.getEmail().equals(existingCandidate.getEmail()))) {
+            if (candidateRepository.existsCandidateByEmail(candidateDto.getEmail())) {
+                throw new EntityAlreadyExistsException("Candidate with email " + candidateDto.getEmail() + " already exists");
+            }
+        }
 
+        if (existingCandidate == null || (candidateDto.getPhoneNumber() != null && !candidateDto.getPhoneNumber().equals(existingCandidate.getPhoneNumber()))) {
+            if (candidateRepository.existsCandidateByPhoneNumber(candidateDto.getPhoneNumber())) {
+                throw new EntityAlreadyExistsException("Candidate with phone number " + candidateDto.getPhoneNumber() + " already exists");
+            }
+        }
 
-    @Override
-    public void patchCandidate(Integer candidateId, CandidateDto updateRequest) throws ParseException {
-        Candidate candidate = candidateRepository.findById(candidateId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Candidate with id [%s] not found".formatted(candidateId)));
-
-        ValidatorUtil.validate(updateRequest);
-        candidateValidator.updateCandidateFields(candidate, updateRequest);
-        candidateRepository.save(candidate);
+        if (candidateDto.getBirthday() != null && candidateDto.getBirthday().isAfter(LocalDate.now())) {
+            throw new InvalidBirthdayException("Birthday cannot be in the future");
+        }
     }
 }
+

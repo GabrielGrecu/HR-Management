@@ -1,4 +1,4 @@
-package com.nagarro.si.um.exception;
+package com.nagarro.si.cm.exception;
 
 public class EntityNotFoundException extends RuntimeException {
     public EntityNotFoundException(String message) {

@@ -38,6 +38,8 @@ public class Candidate {
 
     private String city;
 
+    private String address;
+
     private String faculty;
 
     @Column(name = "phone_number", nullable = false, unique = true)
