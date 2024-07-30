@@ -32,7 +32,7 @@ public class CandidateController {
     }
 
     @PostMapping
-    public CandidateDto createCandidate(@Validated(ValidationGroups.CreateUpdate.class) @RequestBody CandidateDto candidateDto) {
+    public CandidateDto createCandidate(@Validated(ValidationGroups.ValidateUpdate.class) @RequestBody CandidateDto candidateDto) {
         return candidateService.saveCandidate(candidateDto);
     }
 
@@ -64,14 +64,14 @@ public class CandidateController {
     @PutMapping("/{candidateId}")
     public void updateCandidate(
             @PathVariable("candidateId") Integer candidateId,
-            @Validated(ValidationGroups.CreateUpdate.class) @RequestBody CandidateDto updateRequest) throws ParseException {
+            @Validated(ValidationGroups.ValidateUpdate.class) @RequestBody CandidateDto updateRequest) throws ParseException {
         candidateService.updateCandidate(candidateId, updateRequest);
     }
 
     @PatchMapping("/{candidateId}")
     public void patchUpdateCandidate(
             @PathVariable("candidateId") Integer candidateId,
-            @Validated(ValidationGroups.Patch.class) @RequestBody CandidateDto candidateDto) throws ParseException {
+            @Validated(ValidationGroups.ValidatePatch.class) @RequestBody CandidateDto candidateDto) throws ParseException {
         candidateService.patchCandidate(candidateId, candidateDto);
     }
 }

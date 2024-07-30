@@ -16,29 +16,29 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@CityAddressConstraint(groups = {ValidationGroups.CreateUpdate.class, ValidationGroups.Patch.class})
+@CityAddressConstraint(groups = {ValidationGroups.ValidateUpdate.class, ValidationGroups.ValidatePatch.class})
 public class CandidateDto {
     private int id;
 
-    @NotBlank(message = "Username is required", groups = ValidationGroups.CreateUpdate.class)
+    @NotBlank(message = "Username is required", groups = ValidationGroups.ValidateUpdate.class)
     private String username;
 
-    @PastOrPresent(message = "Birthday must be in the past or present", groups = ValidationGroups.CreateUpdate.class)
-    @NotNull(message = "Birthday is required", groups = ValidationGroups.CreateUpdate.class)
+    @PastOrPresent(message = "Birthday must be in the past or present", groups = ValidationGroups.ValidateUpdate.class)
+    @NotNull(message = "Birthday is required", groups = ValidationGroups.ValidateUpdate.class)
     private LocalDate birthday;
 
-    @Email(message = "Email should be valid", groups = {ValidationGroups.CreateUpdate.class, ValidationGroups.Patch.class})
-    @NotBlank(message = "Email is required", groups = ValidationGroups.CreateUpdate.class)
+    @Email(message = "Email should be valid", groups = {ValidationGroups.ValidateUpdate.class, ValidationGroups.ValidatePatch.class})
+    @NotBlank(message = "Email is required", groups = ValidationGroups.ValidateUpdate.class)
     private String email;
 
     private String city;
     private String address;
     private String faculty;
 
-    @Pattern(regexp = "^([+]|0)\\d{1,14}$", message = "Phone number is not valid", groups = {ValidationGroups.CreateUpdate.class, ValidationGroups.Patch.class})
+    @Pattern(regexp = "^([+]|0)\\d{1,14}$", message = "Phone number is not valid", groups = {ValidationGroups.ValidateUpdate.class, ValidationGroups.ValidatePatch.class})
     private String phoneNumber;
 
-    @NotNull(message = "Years of experience is required", groups = ValidationGroups.CreateUpdate.class)
+    @NotNull(message = "Years of experience is required", groups = ValidationGroups.ValidateUpdate.class)
     private Integer yearsOfExperience;
 
     private String recruitmentChannel;

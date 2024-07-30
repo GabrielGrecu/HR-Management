@@ -2,7 +2,6 @@ package com.nagarro.si.cm.dto;
 
 import com.nagarro.si.cm.validator.ValidationGroups;
 import jakarta.validation.ConstraintViolation;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,7 @@ public class CandidateDtoTest {
 
         CandidateDto candidate = new CandidateDto(id, username, birthday, email, city, address, faculty, phoneNumber, yearsOfExperience, recruitmentChannel);
 
-        Set<ConstraintViolation<CandidateDto>> violations = validatorFactory.getValidator().validate(candidate, ValidationGroups.CreateUpdate.class);
+        Set<ConstraintViolation<CandidateDto>> violations = validatorFactory.getValidator().validate(candidate, ValidationGroups.ValidateUpdate.class);
 
         assertEquals(expectedViolationCount, violations.size());
     }
