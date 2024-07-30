@@ -51,7 +51,7 @@ class CandidateServiceTest {
         candidate.setEmail("john.doe@example.com");
         candidate.setPhoneNumber("1234567890");
 
-        candidate.setBirthday(new Date(94, 6, 11));
+        candidate.setBirthday(Date.valueOf("1994-07-11"));
         candidateDto = new CandidateDto();
         candidateDto.setId(1);
         candidateDto.setUsername("john_doe");

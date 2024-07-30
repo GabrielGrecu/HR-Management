@@ -32,21 +32,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public CandidateDto saveCandidate(CandidateDto candidateDto) {
-        if (candidateRepository.existsCandidateByUsername(candidateDto.getUsername())) {
-            throw new EntityAlreadyExistsException("Candidate with username " + candidateDto.getUsername() + " already exists");
-        }
-
-        if (candidateRepository.existsCandidateByEmail(candidateDto.getEmail())) {
-            throw new EntityAlreadyExistsException("Candidate with email " + candidateDto.getEmail() + " already exists");
-        }
-
-        if (candidateRepository.existsCandidateByPhoneNumber(candidateDto.getPhoneNumber())) {
-            throw new EntityAlreadyExistsException("Candidate with phone number " + candidateDto.getPhoneNumber() + " already exists");
-        }
-
-        if (candidateDto.getBirthday().isAfter(LocalDate.now())) {
-            throw new InvalidBirthdayException("Birthday cannot be in the future");
-        }
+        checkValidation(candidateDto,null);
 
         Candidate candidate = candidateMapper.toCandidate(candidateDto);
         Candidate savedCandidate = candidateRepository.save(candidate);
@@ -58,7 +44,7 @@ public class CandidateServiceImpl implements CandidateService {
         List<Candidate> candidates = candidateRepository.findAll();
         return candidates.stream()
                 .map(candidateMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -101,24 +87,7 @@ public class CandidateServiceImpl implements CandidateService {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new EntityNotFoundException("Candidate with id [%s] not found".formatted(candidateId)));
 
-        if (candidateDto.getUsername() != null && !candidateDto.getUsername().equals(candidate.getUsername()) &&
-                candidateRepository.existsCandidateByUsername(candidateDto.getUsername())) {
-            throw new EntityAlreadyExistsException("Candidate with username " + candidateDto.getUsername() + " already exists");
-        }
-
-        if (candidateDto.getEmail() != null && !candidateDto.getEmail().equals(candidate.getEmail()) &&
-                candidateRepository.existsCandidateByEmail(candidateDto.getEmail())) {
-            throw new EntityAlreadyExistsException("Candidate with email " + candidateDto.getEmail() + " already exists");
-        }
-
-        if (candidateDto.getPhoneNumber() != null && !candidateDto.getPhoneNumber().equals(candidate.getPhoneNumber()) &&
-                candidateRepository.existsCandidateByPhoneNumber(candidateDto.getPhoneNumber())) {
-            throw new EntityAlreadyExistsException("Candidate with phone number " + candidateDto.getPhoneNumber() + " already exists");
-        }
-
-        if (candidateDto.getBirthday() != null && candidateDto.getBirthday().isAfter(LocalDate.now())) {
-            throw new InvalidBirthdayException("Birthday cannot be in the future");
-        }
+        checkValidation(candidateDto, candidate);
 
         candidateMapper.updateCandidateFromDto(candidate, candidateDto);
         candidateRepository.save(candidate);
@@ -129,26 +98,14 @@ public class CandidateServiceImpl implements CandidateService {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new EntityNotFoundException("Candidate with id [%s] not found".formatted(candidateId)));
 
-        //Moved candidateValidator.validateFields
-        if (updateRequest.getUsername() != null && !updateRequest.getUsername().equals(candidate.getUsername()) &&
-                candidateRepository.existsCandidateByUsername(updateRequest.getUsername())) {
-            throw new EntityAlreadyExistsException("Candidate with username " + updateRequest.getUsername() + " already exists");
-        }
+        checkValidation(updateRequest, candidate);
 
-        if (updateRequest.getEmail() != null && !updateRequest.getEmail().equals(candidate.getEmail()) &&
-                candidateRepository.existsCandidateByEmail(updateRequest.getEmail())) {
-            throw new EntityAlreadyExistsException("Candidate with email " + updateRequest.getEmail() + " already exists");
-        }
+        partialUpdate(updateRequest, candidate);
 
-        if (updateRequest.getPhoneNumber() != null && !updateRequest.getPhoneNumber().equals(candidate.getPhoneNumber()) &&
-                candidateRepository.existsCandidateByPhoneNumber(updateRequest.getPhoneNumber())) {
-            throw new EntityAlreadyExistsException("Candidate with phone number " + updateRequest.getPhoneNumber() + " already exists");
-        }
+        candidateRepository.save(candidate);
+    }
 
-        if (updateRequest.getBirthday() != null && updateRequest.getBirthday().isAfter(LocalDate.now())) {
-            throw new InvalidBirthdayException("Birthday cannot be in the future");
-        }
-
+    private void partialUpdate(CandidateDto updateRequest, Candidate candidate) {
         if (updateRequest.getUsername() != null) {
             candidate.setUsername(updateRequest.getUsername());
         }
@@ -173,7 +130,30 @@ public class CandidateServiceImpl implements CandidateService {
         if (updateRequest.getRecruitmentChannel() != null) {
             candidate.setRecruitmentChannel(updateRequest.getRecruitmentChannel());
         }
+    }
 
-        candidateRepository.save(candidate);
+    private void checkValidation(CandidateDto candidateDto, Candidate existingCandidate) {
+        if (existingCandidate == null || (candidateDto.getUsername() != null && !candidateDto.getUsername().equals(existingCandidate.getUsername()))) {
+            if (candidateRepository.existsCandidateByUsername(candidateDto.getUsername())) {
+                throw new EntityAlreadyExistsException("Candidate with username " + candidateDto.getUsername() + " already exists");
+            }
+        }
+
+        if (existingCandidate == null || (candidateDto.getEmail() != null && !candidateDto.getEmail().equals(existingCandidate.getEmail()))) {
+            if (candidateRepository.existsCandidateByEmail(candidateDto.getEmail())) {
+                throw new EntityAlreadyExistsException("Candidate with email " + candidateDto.getEmail() + " already exists");
+            }
+        }
+
+        if (existingCandidate == null || (candidateDto.getPhoneNumber() != null && !candidateDto.getPhoneNumber().equals(existingCandidate.getPhoneNumber()))) {
+            if (candidateRepository.existsCandidateByPhoneNumber(candidateDto.getPhoneNumber())) {
+                throw new EntityAlreadyExistsException("Candidate with phone number " + candidateDto.getPhoneNumber() + " already exists");
+            }
+        }
+
+        if (candidateDto.getBirthday() != null && candidateDto.getBirthday().isAfter(LocalDate.now())) {
+            throw new InvalidBirthdayException("Birthday cannot be in the future");
+        }
     }
 }
+

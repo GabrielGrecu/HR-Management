@@ -2,8 +2,9 @@ package com.nagarro.si.cm.controller;
 
 import com.nagarro.si.cm.dto.CandidateDto;
 import com.nagarro.si.cm.service.CandidateService;
-import jakarta.validation.Valid;
+import com.nagarro.si.cm.validator.ValidationGroups;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -31,7 +32,7 @@ public class CandidateController {
     }
 
     @PostMapping
-    public CandidateDto createCandidate(@Valid @RequestBody CandidateDto candidateDto) {
+    public CandidateDto createCandidate(@Validated(ValidationGroups.CreateUpdate.class) @RequestBody CandidateDto candidateDto) {
         return candidateService.saveCandidate(candidateDto);
     }
 
@@ -63,14 +64,14 @@ public class CandidateController {
     @PutMapping("/{candidateId}")
     public void updateCandidate(
             @PathVariable("candidateId") Integer candidateId,
-            @Valid @RequestBody CandidateDto updateRequest) throws ParseException {
+            @Validated(ValidationGroups.CreateUpdate.class) @RequestBody CandidateDto updateRequest) throws ParseException {
         candidateService.updateCandidate(candidateId, updateRequest);
     }
 
     @PatchMapping("/{candidateId}")
     public void patchUpdateCandidate(
             @PathVariable("candidateId") Integer candidateId,
-            @Valid @RequestBody CandidateDto candidateDto) throws ParseException {
+            @Validated(ValidationGroups.Patch.class) @RequestBody CandidateDto candidateDto) throws ParseException {
         candidateService.patchCandidate(candidateId, candidateDto);
     }
 }
