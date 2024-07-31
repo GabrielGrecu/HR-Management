@@ -30,7 +30,7 @@ public class Candidate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String username;
 
     private Date birthday;
@@ -53,11 +53,8 @@ public class Candidate {
     @Column(name = "recruitment_channel")
     private String recruitmentChannel;
 
-    @Column(name = "candidate_feedback", nullable = false)
-    private String candidateFeedback;
-
     @Column(name = "candidate_status", nullable = false)
-    private String candidateStatus;
+    private Status candidateStatus;
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
     private List<Document> documents;

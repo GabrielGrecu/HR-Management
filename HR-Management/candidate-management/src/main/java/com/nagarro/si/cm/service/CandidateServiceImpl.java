@@ -41,7 +41,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public List<CandidateDto> getAllCandidates() {
-        List<Candidate> candidates = candidateRepository.findByCandidateStatus("Active");
+        List<Candidate> candidates = candidateRepository.findByCandidateStatusNot("Archived");
         return candidates.stream()
                 .map(candidateMapper::toDTO)
                 .toList();
@@ -141,7 +141,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     private void checkValidation(CandidateDto candidateDto, Candidate existingCandidate) {
-        if (existingCandidate == null || (candidateDto.getUsername() != null && !candidateDto.getUsername().equals(existingCandidate.getUsername()))) {
+        if (existingCandidate == null || (candidateDto.getUsername() != null  )) {
             if (candidateRepository.existsCandidateByUsername(candidateDto.getUsername())) {
                 throw new EntityAlreadyExistsException("Candidate with username " + candidateDto.getUsername() + " already exists");
             }

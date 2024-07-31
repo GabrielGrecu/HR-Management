@@ -25,7 +25,7 @@ public class Feedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "feedback_comm", nullable = false)
+    @Column(name = "comments", nullable = false)
     private String comment;
 
     @Enumerated(EnumType.STRING)
@@ -33,8 +33,8 @@ public class Feedback {
     private UserRole role;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "feedback_status", nullable = false)
-    private Status status;
+    @Column(name = "status", nullable = false)
+    private FeedbackStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "candidate_id", nullable = false)

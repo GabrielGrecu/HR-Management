@@ -1,6 +1,7 @@
 package com.nagarro.si.cm.service;
 
 import com.nagarro.si.cm.entity.Candidate;
+import com.nagarro.si.cm.entity.Status;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,7 +23,7 @@ public class CandidateStatusScheduler {
     public void updateCandidateStatus() {
         List<Candidate> candidates = candidateRepository.findAll();
         for (Candidate candidate : candidates) {
-            candidate.setCandidateStatus("Archived");
+            candidate.setCandidateStatus(Status.valueOf("Archived"));
             candidateRepository.save(candidate);
         }
     }

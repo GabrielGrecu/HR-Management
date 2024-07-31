@@ -1,6 +1,6 @@
 CREATE TABLE candidate_management.candidate (
 	id INT NOT NULL AUTO_INCREMENT,
-	username VARCHAR(45) NOT NULL UNIQUE,
+	username VARCHAR(45) NOT NULL,
 	birthday DATE NULL,
 	email VARCHAR(45) NOT NULL UNIQUE,
 	phone_number VARCHAR(45) NOT NULL UNIQUE,
@@ -9,6 +9,7 @@ CREATE TABLE candidate_management.candidate (
 	faculty VARCHAR(65) NULL,
 	years_experience INT NULL,
 	recruitment_channel VARCHAR(45) NULL,
+	status VARCHAR(25) NULL,
 	PRIMARY KEY (id)
 );
 

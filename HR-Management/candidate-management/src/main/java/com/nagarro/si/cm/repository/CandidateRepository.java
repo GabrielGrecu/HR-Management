@@ -21,4 +21,6 @@ public interface CandidateRepository extends JpaRepository<Candidate, Integer>, 
     Optional<Candidate> getCandidateByUsername(String username);
 
     List<Candidate> findByCandidateStatus(String candidateStatus);
+
+    List<Candidate> findByCandidateStatusNot(String candidateStatus);
 }

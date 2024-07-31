@@ -23,7 +23,6 @@ public class CandidateMapper {
         candidate.setYearsOfExperience(candidateDto.getYearsOfExperience());
         candidate.setRecruitmentChannel(candidateDto.getRecruitmentChannel());
         candidate.setCandidateStatus(candidateDto.getCandidateStatus());
-        candidate.setCandidateFeedback(candidateDto.getCandidateFeedback());
         return candidate;
     }
 
@@ -39,9 +38,7 @@ public class CandidateMapper {
                 candidate.getPhoneNumber(),
                 candidate.getYearsOfExperience(),
                 candidate.getRecruitmentChannel(),
-                candidate.getCandidateStatus(),
-                candidate.getCandidateFeedback()
-
+                candidate.getCandidateStatus()
         );
     }
 
@@ -55,7 +52,6 @@ public class CandidateMapper {
         candidate.setYearsOfExperience(candidateDto.getYearsOfExperience());
         candidate.setRecruitmentChannel(candidateDto.getRecruitmentChannel());
         candidate.setCandidateStatus(candidateDto.getCandidateStatus());
-        candidate.setCandidateFeedback(candidateDto.getCandidateFeedback());
     }
 
     private Date convertToDate(LocalDate localDate) {
