@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.um.exception.CandidateServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,15 +17,21 @@ import java.net.http.HttpResponse;
 import java.util.Optional;
 
 @Component
-public class CandidateServiceClientImpl implements CandidateServiceClient{
+public class CandidateServiceClientUtil {
 
-    private static final HttpClient httpClient = HttpClient.newBuilder().build();
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final HttpClient httpClient;
+    private final ObjectMapper objectMapper;
+    private final String candidateServiceUrl;
 
-    @Value("${candidate.service.url}")
-    private String candidateServiceUrl;
+    @Autowired
+    public CandidateServiceClientUtil(HttpClient httpClient, ObjectMapper objectMapper, @Value("${candidate.service.url}") String candidateServiceUrl) {
+        this.httpClient = httpClient;
+        this.objectMapper = objectMapper;
+        this.candidateServiceUrl = candidateServiceUrl;
 
-    @Override
+        this.objectMapper.registerModule(new JavaTimeModule());
+    }
+
     public Optional<CandidateDto> getCandidateByEmail(String email) {
         try {
             URI uri = new URI(String.format("%s/candidates/email/%s", candidateServiceUrl, email));
@@ -39,7 +46,7 @@ public class CandidateServiceClientImpl implements CandidateServiceClient{
                 return Optional.empty();
             }
 
-            return Optional.of(objectMapper.registerModule(new JavaTimeModule()).readValue(response.body(), CandidateDto.class));
+            return Optional.of(objectMapper.readValue(response.body(), CandidateDto.class));
         } catch (URISyntaxException | IOException | InterruptedException exception) {
             throw new CandidateServiceException(String.format("Failed to fetch candidate by email: %s", email));
         }

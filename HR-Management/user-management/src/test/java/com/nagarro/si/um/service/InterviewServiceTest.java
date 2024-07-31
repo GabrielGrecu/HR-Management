@@ -10,7 +10,7 @@ import com.nagarro.si.um.exception.EntityNotFoundException;
 import com.nagarro.si.um.mapper.InterviewMapper;
 import com.nagarro.si.um.repository.InterviewRepository;
 import com.nagarro.si.um.repository.UserRepository;
-import com.nagarro.si.um.util.CandidateServiceClient;
+import com.nagarro.si.um.util.CandidateServiceClientUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +42,7 @@ public class InterviewServiceTest {
     @Mock
     private InterviewMapper interviewMapper;
     @Mock
-    private CandidateServiceClient candidateServiceClient;
+    private CandidateServiceClientUtil candidateServiceClientUtil;
     @InjectMocks
     private InterviewService interviewService;
     private User pteUser;
@@ -90,7 +90,7 @@ public class InterviewServiceTest {
 
     @Test
     public void testScheduleInterviewSuccess() {
-        when(candidateServiceClient.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
+        when(candidateServiceClientUtil.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
         when(userRepository.findByEmail("pte@gmail.com")).thenReturn(Optional.of(pteUser));
         when(userRepository.findByEmail("hr1@yahoo.com")).thenReturn(Optional.of(hrUser1));
         when(userRepository.findByEmail("hr2@yahoo.com")).thenReturn(Optional.of(hrUser2));
@@ -109,8 +109,18 @@ public class InterviewServiceTest {
     }
 
     @Test
+    public void testScheduleInterviewCandidateNotFound() {
+        when(candidateServiceClientUtil.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
+                interviewService.scheduleInterview(interviewDTO));
+
+        assertEquals("Candidate with email = candidate@gmail.com not found", exception.getMessage());
+    }
+
+    @Test
     public void testScheduleInterviewNullListOfEmails() {
-        when(candidateServiceClient.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
+        when(candidateServiceClientUtil.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
         InterviewDTO nullEmailListInterviewDTO = new InterviewDTO(
                 null,
                 "candidate@gmail.com",
@@ -130,7 +140,7 @@ public class InterviewServiceTest {
 
     @Test
     public void testScheduleInterviewUserNotFound() {
-        when(candidateServiceClient.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
+        when(candidateServiceClientUtil.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
         when(userRepository.findByEmail("pte@gmail.com")).thenReturn(Optional.empty());
 
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
@@ -141,7 +151,7 @@ public class InterviewServiceTest {
 
     @Test
     public void testScheduleInterviewInvalidDates() {
-        when(candidateServiceClient.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
+        when(candidateServiceClientUtil.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
         when(userRepository.findByEmail("pte@gmail.com")).thenReturn(Optional.of(pteUser));
         when(userRepository.findByEmail("hr1@yahoo.com")).thenReturn(Optional.of(hrUser1));
         when(userRepository.findByEmail("hr2@yahoo.com")).thenReturn(Optional.of(hrUser2));
@@ -165,7 +175,7 @@ public class InterviewServiceTest {
 
     @Test
     public void testScheduleInterviewInvalidPTEAttendees() {
-        when(candidateServiceClient.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
+        when(candidateServiceClientUtil.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
         when(userRepository.findByEmail("hr1@yahoo.com")).thenReturn(Optional.of(hrUser1));
         when(userRepository.findByEmail("hr2@yahoo.com")).thenReturn(Optional.of(hrUser2));
 
@@ -188,7 +198,7 @@ public class InterviewServiceTest {
 
     @Test
     public void testScheduleInterviewInvalidHRAttendees() {
-        when(candidateServiceClient.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
+        when(candidateServiceClientUtil.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
         when(userRepository.findByEmail("pte@gmail.com")).thenReturn(Optional.of(pteUser));
         when(userRepository.findByEmail("hr1@yahoo.com")).thenReturn(Optional.of(hrUser1));
 
@@ -211,7 +221,7 @@ public class InterviewServiceTest {
 
     @Test
     public void testScheduleInterviewInvalidTECHAttendees() {
-        when(candidateServiceClient.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
+        when(candidateServiceClientUtil.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
         when(userRepository.findByEmail("pte@gmail.com")).thenReturn(Optional.of(pteUser));
 
         InterviewDTO invalidTechInterviewDTO = new InterviewDTO(
@@ -233,7 +243,7 @@ public class InterviewServiceTest {
 
     @Test
     public void testScheduleInterviewAttendeesAlreadyBooked() {
-        when(candidateServiceClient.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
+        when(candidateServiceClientUtil.getCandidateByEmail("candidate@gmail.com")).thenReturn(Optional.of(candidateDto));
         when(userRepository.findByEmail("pte@gmail.com")).thenReturn(Optional.of(pteUser));
         when(userRepository.findByEmail("hr1@yahoo.com")).thenReturn(Optional.of(hrUser1));
         when(userRepository.findByEmail("hr2@yahoo.com")).thenReturn(Optional.of(hrUser2));
