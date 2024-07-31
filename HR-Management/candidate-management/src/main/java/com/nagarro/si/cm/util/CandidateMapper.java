@@ -38,7 +38,8 @@ public class CandidateMapper {
                 candidate.getPhoneNumber(),
                 candidate.getYearsOfExperience(),
                 candidate.getRecruitmentChannel(),
-                candidate.getCandidateStatus()
+                candidate.getCandidateStatus(),
+                candidate.getStatusDate()
         );
     }
 
@@ -52,6 +53,7 @@ public class CandidateMapper {
         candidate.setYearsOfExperience(candidateDto.getYearsOfExperience());
         candidate.setRecruitmentChannel(candidateDto.getRecruitmentChannel());
         candidate.setCandidateStatus(candidateDto.getCandidateStatus());
+        candidate.setStatusDate(Date.valueOf(LocalDate.now()));
     }
 
     private Date convertToDate(LocalDate localDate) {

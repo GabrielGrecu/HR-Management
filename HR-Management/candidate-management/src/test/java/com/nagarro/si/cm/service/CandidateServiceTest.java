@@ -2,6 +2,7 @@ package com.nagarro.si.cm.service;
 
 import com.nagarro.si.cm.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
+import com.nagarro.si.cm.entity.Status;
 import com.nagarro.si.cm.exception.EntityAlreadyExistsException;
 import com.nagarro.si.cm.exception.EntityNotFoundException;
 import com.nagarro.si.cm.repository.CandidateRepository;
@@ -50,6 +51,7 @@ class CandidateServiceTest {
         candidate.setUsername("john_doe");
         candidate.setEmail("john.doe@example.com");
         candidate.setPhoneNumber("1234567890");
+        candidate.setCandidateStatus(Status.IN_PROGRESS);
 
         candidate.setBirthday(Date.valueOf("1994-07-11"));
         candidateDto = new CandidateDto();
@@ -85,14 +87,14 @@ class CandidateServiceTest {
 
     @Test
     void testGetAllCandidates() {
-        when(candidateRepository.findAll()).thenReturn(List.of(candidate));
+        when(candidateRepository.findByCandidateStatusNot(Status.ARCHIVED)).thenReturn(List.of(candidate));
         when(candidateMapper.toDTO(candidate)).thenReturn(candidateDto);
 
         List<CandidateDto> candidates = candidateService.getAllCandidates();
 
         assertNotNull(candidates);
         assertEquals(1, candidates.size());
-        verify(candidateRepository).findAll();
+        verify(candidateRepository).findByCandidateStatusNot(Status.ARCHIVED);
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.nagarro.si.cm.repository;
 
 import com.nagarro.si.cm.entity.Candidate;
+import com.nagarro.si.cm.entity.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -20,7 +21,8 @@ public interface CandidateRepository extends JpaRepository<Candidate, Integer>, 
 
     Optional<Candidate> getCandidateByUsername(String username);
 
-    List<Candidate> findByCandidateStatus(String candidateStatus);
+    List<Candidate> findByCandidateStatus(Status candidateStatus);
 
-    List<Candidate> findByCandidateStatusNot(String candidateStatus);
+    List<Candidate> findByCandidateStatusNot(Status candidateStatus);
+
 }

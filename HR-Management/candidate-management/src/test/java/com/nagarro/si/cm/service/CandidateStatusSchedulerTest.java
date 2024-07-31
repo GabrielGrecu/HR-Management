@@ -1,36 +1,57 @@
 package com.nagarro.si.cm.service;
 
+import com.nagarro.si.cm.entity.Status;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import com.nagarro.si.cm.entity.Candidate;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
 public class CandidateStatusSchedulerTest {
 
-    @Autowired
+    @InjectMocks
     private CandidateStatusScheduler candidateStatusScheduler;
 
-    @MockBean
+    @Mock
     private CandidateRepository candidateRepository;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     public void testUpdateCandidateStatus() {
         Candidate candidate = new Candidate();
-        candidate.setCandidateStatus("Old Status");
+        candidate.setId(1);
+        candidate.setUsername("john_doe");
+        candidate.setBirthday(Date.valueOf(LocalDate.of(1990, 1, 1)));
+        candidate.setEmail("john.doe@example.com");
+        candidate.setCity("New York");
+        candidate.setAddress("123 Elm Street");
+        candidate.setFaculty("Engineering");
+        candidate.setPhoneNumber("+1234567890");
+        candidate.setYearsOfExperience(5);
+        candidate.setRecruitmentChannel("LinkedIn");
+        candidate.setCandidateStatus(Status.REJECTED);
+        candidate.setStatusDate(Date.valueOf(LocalDate.now().minusMonths(4)));
+
         when(candidateRepository.findAll()).thenReturn(List.of(candidate));
 
         candidateStatusScheduler.updateCandidateStatus();
 
         verify(candidateRepository).save(candidate);
-        assert(candidate.getCandidateStatus().equals("Archived"));
+
+        assertEquals(Status.ARCHIVED, candidate.getCandidateStatus(), "Candidate status should be ARCHIVED");
     }
 }

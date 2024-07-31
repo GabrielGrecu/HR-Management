@@ -2,6 +2,7 @@ package com.nagarro.si.cm.service;
 
 import com.nagarro.si.cm.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
+import com.nagarro.si.cm.entity.Status;
 import com.nagarro.si.cm.exception.EntityAlreadyExistsException;
 import com.nagarro.si.cm.exception.EntityNotFoundException;
 import com.nagarro.si.cm.exception.InvalidBirthdayException;
@@ -34,6 +35,8 @@ public class CandidateServiceImpl implements CandidateService {
     public CandidateDto saveCandidate(CandidateDto candidateDto) {
         checkValidation(candidateDto, null);
 
+        candidateDto.setStatusDate(Date.valueOf(LocalDate.now()));
+
         Candidate candidate = candidateMapper.toCandidate(candidateDto);
         Candidate savedCandidate = candidateRepository.save(candidate);
         return candidateMapper.toDTO(savedCandidate);
@@ -41,7 +44,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public List<CandidateDto> getAllCandidates() {
-        List<Candidate> candidates = candidateRepository.findByCandidateStatusNot("Archived");
+        List<Candidate> candidates = candidateRepository.findByCandidateStatusNot(Status.ARCHIVED);
         return candidates.stream()
                 .map(candidateMapper::toDTO)
                 .toList();
@@ -49,7 +52,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public List<CandidateDto> getArchivedCandidates() {
-        List<Candidate> candidates = candidateRepository.findByCandidateStatus("Archived");
+        List<Candidate> candidates = candidateRepository.findByCandidateStatus(Status.ARCHIVED);
         return candidates.stream()
                 .map(candidateMapper::toDTO)
                 .toList();
@@ -141,7 +144,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     private void checkValidation(CandidateDto candidateDto, Candidate existingCandidate) {
-        if (existingCandidate == null || (candidateDto.getUsername() != null  )) {
+        if (existingCandidate == null || (candidateDto.getUsername() != null)) {
             if (candidateRepository.existsCandidateByUsername(candidateDto.getUsername())) {
                 throw new EntityAlreadyExistsException("Candidate with username " + candidateDto.getUsername() + " already exists");
             }

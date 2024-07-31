@@ -10,6 +10,7 @@ CREATE TABLE candidate_management.candidate (
 	years_experience INT NULL,
 	recruitment_channel VARCHAR(45) NULL,
 	status VARCHAR(25) NULL,
+	statusDate DATE NULL,
 	PRIMARY KEY (id)
 );
 
