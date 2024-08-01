@@ -1,6 +1,7 @@
 package com.nagarro.si.cm.dto;
 
 import com.nagarro.si.cm.entity.Status;
+import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.common.validator.ValidationGroups;
 import jakarta.validation.ConstraintViolation;
 import org.junit.jupiter.params.ParameterizedTest;

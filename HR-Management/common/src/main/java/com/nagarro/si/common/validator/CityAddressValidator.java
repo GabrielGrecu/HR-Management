@@ -1,6 +1,6 @@
 package com.nagarro.si.common.validator;
 
-import com.nagarro.si.cm.dto.CandidateDto;
+import com.nagarro.si.common.dto.CandidateDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
