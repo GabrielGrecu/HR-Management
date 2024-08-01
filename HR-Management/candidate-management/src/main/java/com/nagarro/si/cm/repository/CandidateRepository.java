@@ -1,7 +1,7 @@
 package com.nagarro.si.cm.repository;
 
 import com.nagarro.si.cm.entity.Candidate;
-import com.nagarro.si.cm.entity.Status;
+import com.nagarro.si.common.dto.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;

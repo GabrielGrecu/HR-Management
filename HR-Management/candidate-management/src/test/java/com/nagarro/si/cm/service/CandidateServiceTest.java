@@ -1,12 +1,11 @@
 package com.nagarro.si.cm.service;
 
-import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
-import com.nagarro.si.cm.entity.Status;
-import com.nagarro.si.cm.exception.EntityAlreadyExistsException;
 import com.nagarro.si.cm.exception.EntityNotFoundException;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import com.nagarro.si.cm.util.CandidateMapper;
+import com.nagarro.si.common.dto.CandidateDto;
+import com.nagarro.si.common.dto.Status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

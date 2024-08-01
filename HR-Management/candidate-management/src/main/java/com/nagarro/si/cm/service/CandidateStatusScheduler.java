@@ -1,7 +1,7 @@
 package com.nagarro.si.cm.service;
 
 import com.nagarro.si.cm.entity.Candidate;
-import com.nagarro.si.cm.entity.Status;
+import com.nagarro.si.common.dto.Status;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

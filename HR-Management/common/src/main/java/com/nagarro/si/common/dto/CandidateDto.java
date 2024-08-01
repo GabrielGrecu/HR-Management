@@ -1,6 +1,5 @@
 package com.nagarro.si.common.dto;
 
-import com.nagarro.si.cm.entity.Status;
 import com.nagarro.si.common.validator.CityAddressConstraint;
 import com.nagarro.si.common.validator.ValidationGroups;
 import jakarta.validation.constraints.Email;

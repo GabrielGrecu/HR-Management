@@ -1,5 +1,6 @@
 package com.nagarro.si.cm.entity;
 
+import com.nagarro.si.common.dto.Status;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
