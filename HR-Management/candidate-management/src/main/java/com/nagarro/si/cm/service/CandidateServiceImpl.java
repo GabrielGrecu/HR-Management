@@ -165,7 +165,7 @@ public class CandidateServiceImpl implements CandidateService {
         }
 
         if (candidateDto.getBirthday() != null && candidateDto.getBirthday().isAfter(LocalDate.now())) {
-            throw new InvalidBirthdayException("Birthday cannot be in the future");
+            throw new InvalidBirthdayException("Invalid birthday");
         }
     }
 }
