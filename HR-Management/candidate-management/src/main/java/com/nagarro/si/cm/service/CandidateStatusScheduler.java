@@ -31,11 +31,12 @@ public class CandidateStatusScheduler {
                 Arrays.asList(Status.IN_PROGRESS, Status.REJECTED), threeMonthsAgoDate
         );
 
-        for (Candidate candidate : candidates) {
-            candidate.setCandidateStatus(Status.ARCHIVED);
-            candidate.setStatusDate(Date.valueOf(LocalDate.now()));
-            candidateRepository.save(candidate);
-        }
+        candidates.stream()
+                .peek(candidate -> {
+                    candidate.setCandidateStatus(Status.ARCHIVED);
+                    candidate.setStatusDate(Date.valueOf(LocalDate.now()));
+                })
+                .forEach(candidateRepository::save);
     }
 }
 

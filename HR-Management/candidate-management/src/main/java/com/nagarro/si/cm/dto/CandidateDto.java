@@ -45,7 +45,7 @@ public class CandidateDto {
 
     private String recruitmentChannel;
 
-    private Status candidateStatus;
+    private Status candidateStatus = Status.IN_PROGRESS;
 
     private Date statusDate;
 
