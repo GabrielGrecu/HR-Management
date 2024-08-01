@@ -80,7 +80,7 @@ public class CandidateController {
     @PutMapping("/{candidateId}")
     public void updateCandidate(
             @PathVariable("candidateId") Integer candidateId,
-            @Validated(ValidationGroups.ValidatePatch.class) @RequestBody CandidateDto updateRequest) throws ParseException {
+            @Validated(ValidationGroups.ValidateUpdate.class) @RequestBody CandidateDto updateRequest) throws ParseException {
         log.debug("Request to update candidate with ID: {}", candidateId);
         log.debug("Update request details: {}", updateRequest);
         candidateService.updateCandidate(candidateId, updateRequest);
