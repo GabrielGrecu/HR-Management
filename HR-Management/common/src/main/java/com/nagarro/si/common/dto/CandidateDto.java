@@ -48,4 +48,6 @@ public class CandidateDto {
 
     private Date statusDate;
 
+    @NotNull(message = "Job ID is required", groups = ValidationGroups.ValidateUpdate.class)
+    private Integer jobId;
 }

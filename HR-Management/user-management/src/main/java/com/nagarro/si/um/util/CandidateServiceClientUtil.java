@@ -22,7 +22,7 @@ import java.util.Optional;
 @Component
 public class CandidateServiceClientUtil {
 
-    private static final String CANDIDATES_EMAIL_PATH_FORMAT = "%s/candidates/email/%s";
+    private static final String CANDIDATES_EMAIL_PATH_FORMAT = "%s/candidates/emails/%s";
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
 

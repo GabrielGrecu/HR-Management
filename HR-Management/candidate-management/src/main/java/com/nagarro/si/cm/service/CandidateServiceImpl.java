@@ -1,5 +1,7 @@
 package com.nagarro.si.cm.service;
 
+import com.nagarro.si.cm.entity.Job;
+import com.nagarro.si.cm.repository.JobRepository;
 import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.common.dto.Status;
@@ -24,20 +26,24 @@ public class CandidateServiceImpl implements CandidateService {
 
     private final CandidateRepository candidateRepository;
     private final CandidateMapper candidateMapper;
+    private final JobRepository jobRepository;
 
     @Autowired
-    public CandidateServiceImpl(CandidateRepository candidateRepository, CandidateMapper candidateMapper) {
+    public CandidateServiceImpl(CandidateRepository candidateRepository, CandidateMapper candidateMapper, JobRepository jobRepository) {
         this.candidateRepository = candidateRepository;
         this.candidateMapper = candidateMapper;
+        this.jobRepository = jobRepository;
     }
 
     @Override
     public CandidateDto saveCandidate(CandidateDto candidateDto) {
         checkValidation(candidateDto, null);
+        Job job = validateJobExists(candidateDto.getJobId());
 
         candidateDto.setStatusDate(Date.valueOf(LocalDate.now()));
 
         Candidate candidate = candidateMapper.toCandidate(candidateDto);
+        candidate.setJob(job);
         Candidate savedCandidate = candidateRepository.save(candidate);
         return candidateMapper.toDTO(savedCandidate);
     }
@@ -109,8 +115,10 @@ public class CandidateServiceImpl implements CandidateService {
                 .orElseThrow(() -> new EntityNotFoundException("Candidate with id [%s] not found".formatted(candidateId)));
 
         checkValidation(candidateDto, candidate);
+        Job job = validateJobExists(candidateDto.getJobId());
 
         candidateMapper.updateCandidateFromDto(candidate, candidateDto);
+        candidate.setJob(job);
         candidateRepository.save(candidate);
     }
 
@@ -158,6 +166,10 @@ public class CandidateServiceImpl implements CandidateService {
             candidate.setCandidateStatus(updateRequest.getCandidateStatus());
             candidate.setStatusDate(Date.valueOf(LocalDate.now()));
         }
+        if (updateRequest.getJobId() != null) {
+            Job job = validateJobExists(updateRequest.getJobId());
+            candidate.setJob(job);
+        }
     }
 
     private void checkValidation(CandidateDto candidateDto, Candidate existingCandidate) {
@@ -176,6 +188,11 @@ public class CandidateServiceImpl implements CandidateService {
         if (candidateDto.getBirthday() != null && candidateDto.getBirthday().isAfter(LocalDate.now())) {
             throw new InvalidBirthdayException("Invalid birthday");
         }
+    }
+
+    private Job validateJobExists(Integer jobId) {
+        return jobRepository.findById(jobId)
+                .orElseThrow(() -> new EntityNotFoundException("Job with id " + jobId + " not found"));
     }
 }
 

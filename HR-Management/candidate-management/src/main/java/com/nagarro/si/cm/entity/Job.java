@@ -1,18 +1,17 @@
 package com.nagarro.si.cm.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "job")
@@ -24,10 +23,9 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private JobTitle title;
+    private String title;
 
-    @ManyToMany(mappedBy = "jobs")
-    private Set<Candidate> candidates;
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
+    private List<Candidate> candidates;
 }
