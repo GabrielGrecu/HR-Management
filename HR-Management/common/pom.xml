@@ -12,6 +12,8 @@
 	<version>${project.version}</version>
 	<name>common</name>
 	<description>Project from common-management</description>
+	<dependencies>
+	</dependencies>
 
 	<build>
 		<plugins>

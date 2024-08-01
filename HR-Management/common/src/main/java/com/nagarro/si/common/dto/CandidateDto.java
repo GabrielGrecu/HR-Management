@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
 import java.time.LocalDate;
 
 @NoArgsConstructor
@@ -42,4 +43,9 @@ public class CandidateDto {
     private Integer yearsOfExperience;
 
     private String recruitmentChannel;
+
+    private Status candidateStatus = Status.IN_PROGRESS;
+
+    private Date statusDate;
+
 }

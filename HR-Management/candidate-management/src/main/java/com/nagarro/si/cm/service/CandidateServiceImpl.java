@@ -2,6 +2,7 @@ package com.nagarro.si.cm.service;
 
 import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
+import com.nagarro.si.common.dto.Status;
 import com.nagarro.si.cm.exception.EntityAlreadyExistsException;
 import com.nagarro.si.cm.exception.EntityNotFoundException;
 import com.nagarro.si.cm.exception.InvalidBirthdayException;
@@ -34,6 +35,8 @@ public class CandidateServiceImpl implements CandidateService {
     public CandidateDto saveCandidate(CandidateDto candidateDto) {
         checkValidation(candidateDto, null);
 
+        candidateDto.setStatusDate(Date.valueOf(LocalDate.now()));
+
         Candidate candidate = candidateMapper.toCandidate(candidateDto);
         Candidate savedCandidate = candidateRepository.save(candidate);
         return candidateMapper.toDTO(savedCandidate);
@@ -42,6 +45,15 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public List<CandidateDto> getAllCandidates() {
         List<Candidate> candidates = candidateRepository.findAll();
+        return candidates.stream()
+                .filter(candidate -> candidate.getCandidateStatus() != Status.ARCHIVED)
+                .map(candidateMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<CandidateDto> getArchivedCandidates() {
+        List<Candidate> candidates = candidateRepository.findByCandidateStatus(Status.ARCHIVED);
         return candidates.stream()
                 .map(candidateMapper::toDTO)
                 .toList();
@@ -127,6 +139,9 @@ public class CandidateServiceImpl implements CandidateService {
         if (updateRequest.getCity() != null) {
             candidate.setCity(updateRequest.getCity());
         }
+        if (updateRequest.getAddress() != null) {
+            candidate.setAddress(updateRequest.getAddress());
+        }
         if (updateRequest.getFaculty() != null) {
             candidate.setFaculty(updateRequest.getFaculty());
         }
@@ -139,15 +154,13 @@ public class CandidateServiceImpl implements CandidateService {
         if (updateRequest.getRecruitmentChannel() != null) {
             candidate.setRecruitmentChannel(updateRequest.getRecruitmentChannel());
         }
+        if (updateRequest.getCandidateStatus() != null) {
+            candidate.setCandidateStatus(updateRequest.getCandidateStatus());
+            candidate.setStatusDate(Date.valueOf(LocalDate.now()));
+        }
     }
 
     private void checkValidation(CandidateDto candidateDto, Candidate existingCandidate) {
-        if (existingCandidate == null || (candidateDto.getUsername() != null && !candidateDto.getUsername().equals(existingCandidate.getUsername()))) {
-            if (candidateRepository.existsCandidateByUsername(candidateDto.getUsername())) {
-                throw new EntityAlreadyExistsException("Candidate with username " + candidateDto.getUsername() + " already exists");
-            }
-        }
-
         if (existingCandidate == null || (candidateDto.getEmail() != null && !candidateDto.getEmail().equals(existingCandidate.getEmail()))) {
             if (candidateRepository.existsCandidateByEmail(candidateDto.getEmail())) {
                 throw new EntityAlreadyExistsException("Candidate with email " + candidateDto.getEmail() + " already exists");
@@ -161,7 +174,7 @@ public class CandidateServiceImpl implements CandidateService {
         }
 
         if (candidateDto.getBirthday() != null && candidateDto.getBirthday().isAfter(LocalDate.now())) {
-            throw new InvalidBirthdayException("Birthday cannot be in the future");
+            throw new InvalidBirthdayException("Invalid birthday");
         }
     }
 }
