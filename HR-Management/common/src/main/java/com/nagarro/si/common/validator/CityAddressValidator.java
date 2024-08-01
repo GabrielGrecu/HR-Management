@@ -1,4 +1,4 @@
-package com.nagarro.si.cm.validator;
+package com.nagarro.si.common.validator;
 
 import com.nagarro.si.cm.dto.CandidateDto;
 import jakarta.validation.ConstraintValidator;

@@ -23,6 +23,8 @@ public interface CandidateRepository extends JpaRepository<Candidate, Integer>, 
 
     Optional<Candidate> getCandidateByUsername(String username);
 
+    Optional<Candidate> getCandidateByEmail(String email);
+
     List<Candidate> findByCandidateStatus(Status candidateStatus);
 
     @Query("SELECT c FROM Candidate c WHERE c.candidateStatus IN (:statuses) AND c.statusDate <= :date")
