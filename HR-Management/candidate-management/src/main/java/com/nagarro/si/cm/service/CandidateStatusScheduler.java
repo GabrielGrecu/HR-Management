@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -24,16 +25,17 @@ public class CandidateStatusScheduler {
     @Scheduled(cron = "0 0 0 * * ?")
     public void updateCandidateStatus() {
         LocalDate threeMonthsAgo = LocalDate.now().minusMonths(3);
-        List<Candidate> candidates = candidateRepository.findAll();
+        Date threeMonthsAgoDate = Date.valueOf(threeMonthsAgo);
+
+        List<Candidate> candidates = candidateRepository.findCandidatesForArchiving(
+                Arrays.asList(Status.IN_PROGRESS, Status.REJECTED), threeMonthsAgoDate
+        );
 
         for (Candidate candidate : candidates) {
-            if (candidate.getCandidateStatus() == Status.IN_PROGRESS ||
-                    candidate.getCandidateStatus() == Status.REJECTED &&
-                            candidate.getStatusDate().toLocalDate().isBefore(threeMonthsAgo)) {
-                candidate.setCandidateStatus(Status.ARCHIVED);
-                candidate.setStatusDate(Date.valueOf(LocalDate.now()));
-                candidateRepository.save(candidate);
-            }
+            candidate.setCandidateStatus(Status.ARCHIVED);
+            candidate.setStatusDate(Date.valueOf(LocalDate.now()));
+            candidateRepository.save(candidate);
         }
     }
 }
+

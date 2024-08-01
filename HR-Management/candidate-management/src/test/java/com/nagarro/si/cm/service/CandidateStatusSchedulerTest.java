@@ -1,8 +1,8 @@
 package com.nagarro.si.cm.service;
 
+import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.cm.entity.Status;
 import com.nagarro.si.cm.repository.CandidateRepository;
-import com.nagarro.si.cm.entity.Candidate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -48,7 +48,11 @@ public class CandidateStatusSchedulerTest {
 
     @Test
     public void testUpdateCandidateStatus() {
-        when(candidateRepository.findAll()).thenReturn(List.of(candidate));
+        LocalDate threeMonthsAgo = LocalDate.now().minusMonths(3);
+        Date threeMonthsAgoDate = Date.valueOf(threeMonthsAgo);
+
+        when(candidateRepository.findCandidatesForArchiving(List.of(Status.IN_PROGRESS, Status.REJECTED), threeMonthsAgoDate))
+                .thenReturn(List.of(candidate));
 
         candidateStatusScheduler.updateCandidateStatus();
 
