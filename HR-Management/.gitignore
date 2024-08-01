@@ -11,6 +11,7 @@
 **/*.iml
 .idea
 target
+logs
 
 candidate-management/.mvn/
 candidate-management/mvnw

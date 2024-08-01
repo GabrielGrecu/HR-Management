@@ -1,5 +1,6 @@
 package com.nagarro.si.cm.dto;
 
+import com.nagarro.si.cm.CandidateManagementApplication;
 import com.nagarro.si.cm.validator.ValidationGroups;
 import jakarta.validation.ConstraintViolation;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,7 +16,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+@SpringBootTest(classes = CandidateManagementApplication.class)
 public class CandidateDtoTest {
 
     @Autowired
