@@ -18,4 +18,6 @@ public interface CandidateRepository extends JpaRepository<Candidate, Integer>, 
     boolean existsCandidateByPhoneNumber(String phoneNumber);
 
     Optional<Candidate> getCandidateByUsername(String username);
+
+    Optional<Candidate> getCandidateByEmail(String email);
 }

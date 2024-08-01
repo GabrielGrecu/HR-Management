@@ -1,6 +1,6 @@
 package com.nagarro.si.cm.service;
 
-import com.nagarro.si.cm.dto.CandidateDto;
+import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.cm.exception.EntityAlreadyExistsException;
 import com.nagarro.si.cm.exception.EntityNotFoundException;

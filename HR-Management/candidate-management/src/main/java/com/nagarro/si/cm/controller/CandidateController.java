@@ -1,8 +1,8 @@
 package com.nagarro.si.cm.controller;
 
-import com.nagarro.si.cm.dto.CandidateDto;
+import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.cm.service.CandidateService;
-import com.nagarro.si.cm.validator.ValidationGroups;
+import com.nagarro.si.common.validator.ValidationGroups;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -49,6 +49,11 @@ public class CandidateController {
     @GetMapping("/username/{username}")
     public CandidateDto getCandidateByUsername(@PathVariable("username") String username) {
         return candidateService.getCandidateByUsername(username);
+    }
+
+    @GetMapping("/emails/{email}")
+    public CandidateDto getCandidateByEmail(@PathVariable("email") String email) {
+        return candidateService.getCandidateByEmail(email);
     }
 
     @GetMapping("/search")

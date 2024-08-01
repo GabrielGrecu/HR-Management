@@ -1,6 +1,6 @@
 package com.nagarro.si.cm.util;
 
-import com.nagarro.si.cm.dto.CandidateDto;
+import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
 import org.springframework.stereotype.Component;
 

@@ -1,5 +1,6 @@
 package com.nagarro.si.um.service;
 
+import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.um.dto.InterviewDTO;
 import com.nagarro.si.um.entity.Interview;
 import com.nagarro.si.um.entity.InterviewType;
@@ -8,6 +9,7 @@ import com.nagarro.si.um.exception.EntityNotFoundException;
 import com.nagarro.si.um.mapper.InterviewMapper;
 import com.nagarro.si.um.repository.InterviewRepository;
 import com.nagarro.si.um.repository.UserRepository;
+import com.nagarro.si.um.util.CandidateServiceClientUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,15 +25,23 @@ public class InterviewService {
     private final InterviewRepository interviewRepository;
     private final UserRepository userRepository;
     private final InterviewMapper interviewMapper;
+    private final CandidateServiceClientUtil candidateServiceClientUtil;
 
     @Autowired
-    public InterviewService(InterviewRepository interviewRepository, UserRepository userRepository, InterviewMapper interviewMapper) {
+    public InterviewService(InterviewRepository interviewRepository,
+                            UserRepository userRepository,
+                            InterviewMapper interviewMapper,
+                            CandidateServiceClientUtil candidateServiceClientUtil) {
         this.interviewRepository = interviewRepository;
         this.userRepository = userRepository;
         this.interviewMapper = interviewMapper;
+        this.candidateServiceClientUtil = candidateServiceClientUtil;
     }
 
     public InterviewDTO scheduleInterview(InterviewDTO interviewDTO) {
+        CandidateDto candidateDto = candidateServiceClientUtil.getCandidateByEmail(interviewDTO.candidateEmail())
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Candidate with email = %s not found", interviewDTO.candidateEmail())));
+
         Set<User> attendees = findUsersByEmails(interviewDTO.attendeesEmails());
 
         validateDates(interviewDTO.startDate(), interviewDTO.endDate());
