@@ -3,6 +3,8 @@ package com.nagarro.si.cm.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -51,9 +53,11 @@ public class Candidate {
     @Column(name = "recruitment_channel")
     private String recruitmentChannel;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "candidate_status", nullable = false)
     private Status candidateStatus;
 
+    @Column(name = "status_date", nullable = false)
     private Date statusDate;
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)

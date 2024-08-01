@@ -9,8 +9,8 @@ CREATE TABLE candidate_management.candidate (
 	faculty VARCHAR(65) NULL,
 	years_experience INT NULL,
 	recruitment_channel VARCHAR(45) NULL,
-	status VARCHAR(25) NULL,
-	statusDate DATE NULL,
+	candidate_status VARCHAR(25) NULL,
+	status_date DATE NULL,
 	PRIMARY KEY (id)
 );
 
