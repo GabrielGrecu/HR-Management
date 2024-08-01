@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS User (
 
 CREATE TABLE IF NOT EXISTS Interview (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    candidate_id INT,
+    candidate_email VARCHAR(100) NOT NULL UNIQUE,
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
     interview_type VARCHAR(50) NOT NULL,
