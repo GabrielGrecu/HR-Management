@@ -14,7 +14,6 @@ target
 logs
 
 */logs
-**/logs
 
 candidate-management/.mvn/
 candidate-management/mvnw

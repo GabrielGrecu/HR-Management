@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Candidate Controller", description = "This is my Candidate Controller")
-@Log4j2
+@Slf4j
 @RestController
 @RequestMapping("/candidates")
 public class CandidateController {
@@ -75,7 +75,8 @@ public class CandidateController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Candidate updated successfully"),
             @ApiResponse(responseCode = "404", description = "Candidate not found"),
-            @ApiResponse(responseCode = "400", description = "Invalid update data")
+            @ApiResponse(responseCode = "400", description = "Invalid update data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PutMapping("/{candidateId}")
     public void updateCandidate(
