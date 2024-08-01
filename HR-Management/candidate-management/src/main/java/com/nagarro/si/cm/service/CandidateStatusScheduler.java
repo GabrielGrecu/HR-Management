@@ -27,12 +27,12 @@ public class CandidateStatusScheduler {
         List<Candidate> candidates = candidateRepository.findAll();
 
         for (Candidate candidate : candidates) {
-                if (candidate.getCandidateStatus() == Status.IN_PROGRESS ||
-                        candidate.getCandidateStatus() == Status.REJECTED &&
-                                candidate.getStatusDate().toLocalDate().isBefore(threeMonthsAgo)) {
-                    candidate.setCandidateStatus(Status.ARCHIVED);
-                    candidate.setStatusDate(Date.valueOf(LocalDate.now()));
-                    candidateRepository.save(candidate);
+            if (candidate.getCandidateStatus() == Status.IN_PROGRESS ||
+                    candidate.getCandidateStatus() == Status.REJECTED &&
+                            candidate.getStatusDate().toLocalDate().isBefore(threeMonthsAgo)) {
+                candidate.setCandidateStatus(Status.ARCHIVED);
+                candidate.setStatusDate(Date.valueOf(LocalDate.now()));
+                candidateRepository.save(candidate);
             }
         }
     }

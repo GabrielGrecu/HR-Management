@@ -1,6 +1,9 @@
 package com.nagarro.si.cm.validator;
 
 public interface ValidationGroups {
-    interface ValidateUpdate {}
-    interface ValidatePatch {}
+    interface ValidateUpdate {
+    }
+
+    interface ValidatePatch {
+    }
 }
