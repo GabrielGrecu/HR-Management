@@ -130,6 +130,9 @@ public class CandidateServiceImpl implements CandidateService {
         if (updateRequest.getCity() != null) {
             candidate.setCity(updateRequest.getCity());
         }
+        if (updateRequest.getAddress() != null) {
+            candidate.setAddress(updateRequest.getAddress());
+        }
         if (updateRequest.getFaculty() != null) {
             candidate.setFaculty(updateRequest.getFaculty());
         }
@@ -141,6 +144,10 @@ public class CandidateServiceImpl implements CandidateService {
         }
         if (updateRequest.getRecruitmentChannel() != null) {
             candidate.setRecruitmentChannel(updateRequest.getRecruitmentChannel());
+        }
+        if (updateRequest.getCandidateStatus() != null) {
+            candidate.setCandidateStatus(updateRequest.getCandidateStatus());
+            candidate.setStatusDate(Date.valueOf(LocalDate.now()));
         }
     }
 
