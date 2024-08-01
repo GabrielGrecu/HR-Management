@@ -51,7 +51,7 @@ public class CandidateController {
         return candidateService.getCandidateByUsername(username);
     }
 
-    @GetMapping("/email/{email}")
+    @GetMapping("/emails/{email}")
     public CandidateDto getCandidateByEmail(@PathVariable("email") String email) {
         return candidateService.getCandidateByEmail(email);
     }
