@@ -25,14 +25,13 @@ public class CandidateStatusSchedulerTest {
     @Mock
     private CandidateRepository candidateRepository;
 
+    private Candidate candidate;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-    }
 
-    @Test
-    public void testUpdateCandidateStatus() {
-        Candidate candidate = new Candidate();
+        candidate = new Candidate();
         candidate.setId(1);
         candidate.setUsername("john_doe");
         candidate.setBirthday(Date.valueOf(LocalDate.of(1990, 1, 1)));
@@ -45,13 +44,15 @@ public class CandidateStatusSchedulerTest {
         candidate.setRecruitmentChannel("LinkedIn");
         candidate.setCandidateStatus(Status.REJECTED);
         candidate.setStatusDate(Date.valueOf(LocalDate.now().minusMonths(4)));
+    }
 
+    @Test
+    public void testUpdateCandidateStatus() {
         when(candidateRepository.findAll()).thenReturn(List.of(candidate));
 
         candidateStatusScheduler.updateCandidateStatus();
 
         verify(candidateRepository).save(candidate);
-
         assertEquals(Status.ARCHIVED, candidate.getCandidateStatus(), "Candidate status should be ARCHIVED");
     }
 }

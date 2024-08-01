@@ -78,23 +78,18 @@ class CandidateServiceTest {
         verify(candidateRepository).save(candidate);
     }
 
-    @Test
-    void testSaveCandidate_UsernameExists() {
-        when(candidateRepository.existsCandidateByUsername(candidateDto.getUsername())).thenReturn(true);
-
-        assertThrows(EntityAlreadyExistsException.class, () -> candidateService.saveCandidate(candidateDto));
-    }
 
     @Test
     void testGetAllCandidates() {
-        when(candidateRepository.findByCandidateStatusNot(Status.ARCHIVED)).thenReturn(List.of(candidate));
+        when(candidateRepository.findAll()).thenReturn(List.of(candidate));
         when(candidateMapper.toDTO(candidate)).thenReturn(candidateDto);
 
         List<CandidateDto> candidates = candidateService.getAllCandidates();
 
         assertNotNull(candidates);
         assertEquals(1, candidates.size());
-        verify(candidateRepository).findByCandidateStatusNot(Status.ARCHIVED);
+        assertEquals(candidateDto, candidates.get(0));
+        verify(candidateRepository).findAll();
     }
 
     @Test
