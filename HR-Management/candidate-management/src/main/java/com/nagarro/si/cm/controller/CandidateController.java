@@ -10,7 +10,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 import java.util.List;
@@ -71,7 +80,7 @@ public class CandidateController {
     @PutMapping("/{candidateId}")
     public void updateCandidate(
             @PathVariable("candidateId") Integer candidateId,
-            @RequestBody CandidateDto updateRequest) throws ParseException {
+            @Validated(ValidationGroups.ValidatePatch.class) @RequestBody CandidateDto updateRequest) throws ParseException {
         log.debug("Request to update candidate with ID: {}", candidateId);
         log.debug("Update request details: {}", updateRequest);
         candidateService.updateCandidate(candidateId, updateRequest);
