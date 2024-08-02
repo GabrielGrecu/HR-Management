@@ -1,7 +1,7 @@
-package com.nagarro.si.cm.entity;
+package com.nagarro.si.common.dto;
 
 public enum Status {
-    IN_REVIEW,
+    IN_PROGRESS,
     REJECTED,
     ACCEPTED,
     ARCHIVED

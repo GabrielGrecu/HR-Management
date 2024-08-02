@@ -1,6 +1,6 @@
 package com.nagarro.si.cm.util;
 
-import com.nagarro.si.cm.dto.CandidateDto;
+import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +22,8 @@ public class CandidateMapper {
         candidate.setPhoneNumber(candidateDto.getPhoneNumber());
         candidate.setYearsOfExperience(candidateDto.getYearsOfExperience());
         candidate.setRecruitmentChannel(candidateDto.getRecruitmentChannel());
+        candidate.setCandidateStatus(candidateDto.getCandidateStatus());
+        candidate.setStatusDate(candidateDto.getStatusDate());
         return candidate;
     }
 
@@ -36,7 +38,9 @@ public class CandidateMapper {
                 candidate.getFaculty(),
                 candidate.getPhoneNumber(),
                 candidate.getYearsOfExperience(),
-                candidate.getRecruitmentChannel()
+                candidate.getRecruitmentChannel(),
+                candidate.getCandidateStatus(),
+                candidate.getStatusDate()
         );
     }
 
@@ -49,6 +53,8 @@ public class CandidateMapper {
         candidate.setPhoneNumber(candidateDto.getPhoneNumber());
         candidate.setYearsOfExperience(candidateDto.getYearsOfExperience());
         candidate.setRecruitmentChannel(candidateDto.getRecruitmentChannel());
+        candidate.setCandidateStatus(candidateDto.getCandidateStatus());
+        candidate.setStatusDate(convertToDate(LocalDate.now()));
     }
 
     private Date convertToDate(LocalDate localDate) {

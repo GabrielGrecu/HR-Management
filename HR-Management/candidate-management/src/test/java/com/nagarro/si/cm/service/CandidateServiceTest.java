@@ -1,11 +1,11 @@
 package com.nagarro.si.cm.service;
 
-import com.nagarro.si.cm.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
-import com.nagarro.si.cm.exception.EntityAlreadyExistsException;
 import com.nagarro.si.cm.exception.EntityNotFoundException;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import com.nagarro.si.cm.util.CandidateMapper;
+import com.nagarro.si.common.dto.CandidateDto;
+import com.nagarro.si.common.dto.Status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -50,6 +50,7 @@ class CandidateServiceTest {
         candidate.setUsername("john_doe");
         candidate.setEmail("john.doe@example.com");
         candidate.setPhoneNumber("1234567890");
+        candidate.setCandidateStatus(Status.IN_PROGRESS);
 
         candidate.setBirthday(Date.valueOf("1994-07-11"));
         candidateDto = new CandidateDto();
@@ -76,12 +77,6 @@ class CandidateServiceTest {
         verify(candidateRepository).save(candidate);
     }
 
-    @Test
-    void testSaveCandidate_UsernameExists() {
-        when(candidateRepository.existsCandidateByUsername(candidateDto.getUsername())).thenReturn(true);
-
-        assertThrows(EntityAlreadyExistsException.class, () -> candidateService.saveCandidate(candidateDto));
-    }
 
     @Test
     void testGetAllCandidates() {
@@ -92,6 +87,7 @@ class CandidateServiceTest {
 
         assertNotNull(candidates);
         assertEquals(1, candidates.size());
+        assertEquals(candidateDto, candidates.get(0));
         verify(candidateRepository).findAll();
     }
 

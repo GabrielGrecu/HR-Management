@@ -1,6 +1,6 @@
 package com.nagarro.si.cm.controller;
 
-import com.nagarro.si.cm.dto.CandidateDto;
+import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.cm.service.CandidateService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

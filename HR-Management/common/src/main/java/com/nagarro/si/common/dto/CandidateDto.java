@@ -1,7 +1,7 @@
-package com.nagarro.si.cm.dto;
+package com.nagarro.si.common.dto;
 
-import com.nagarro.si.cm.validator.CityAddressConstraint;
-import com.nagarro.si.cm.validator.ValidationGroups;
+import com.nagarro.si.common.validator.CityAddressConstraint;
+import com.nagarro.si.common.validator.ValidationGroups;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
 import java.time.LocalDate;
 
 @NoArgsConstructor
@@ -42,4 +43,9 @@ public class CandidateDto {
     private Integer yearsOfExperience;
 
     private String recruitmentChannel;
+
+    private Status candidateStatus = Status.IN_PROGRESS;
+
+    private Date statusDate;
+
 }

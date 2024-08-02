@@ -1,6 +1,6 @@
 package com.nagarro.si.cm.service;
 
-import com.nagarro.si.cm.dto.CandidateDto;
+import com.nagarro.si.common.dto.CandidateDto;
 
 import java.text.ParseException;
 import java.util.List;
@@ -12,9 +12,12 @@ public interface CandidateService {
 
     List<CandidateDto> getAllCandidates();
 
+    List<CandidateDto> getArchivedCandidates();
     CandidateDto getCandidateById(int candidateId);
 
     CandidateDto getCandidateByUsername(String username);
+
+    CandidateDto getCandidateByEmail(String email);
 
     List<CandidateDto> filterCandidatesByAnyField(Map<String, Object> filters);
 

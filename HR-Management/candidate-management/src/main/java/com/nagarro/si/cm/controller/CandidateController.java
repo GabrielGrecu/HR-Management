@@ -1,8 +1,8 @@
 package com.nagarro.si.cm.controller;
 
-import com.nagarro.si.cm.dto.CandidateDto;
+import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.cm.service.CandidateService;
-import com.nagarro.si.cm.validator.ValidationGroups;
+import com.nagarro.si.common.validator.ValidationGroups;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -56,6 +56,11 @@ public class CandidateController {
     @GetMapping("/username/{username}")
     public CandidateDto getCandidateByUsername(@PathVariable("username") String username) {
         return candidateService.getCandidateByUsername(username);
+    }
+
+    @GetMapping("/emails/{email}")
+    public CandidateDto getCandidateByEmail(@PathVariable("email") String email) {
+        return candidateService.getCandidateByEmail(email);
     }
 
     @GetMapping("/search")
