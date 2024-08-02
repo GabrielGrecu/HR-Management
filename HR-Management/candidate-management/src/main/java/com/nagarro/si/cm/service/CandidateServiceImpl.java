@@ -1,5 +1,7 @@
 package com.nagarro.si.cm.service;
 
+import com.nagarro.si.cm.entity.Job;
+import com.nagarro.si.cm.repository.JobRepository;
 import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.common.dto.Status;
@@ -17,6 +19,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,20 +27,24 @@ public class CandidateServiceImpl implements CandidateService {
 
     private final CandidateRepository candidateRepository;
     private final CandidateMapper candidateMapper;
+    private final JobRepository jobRepository;
 
     @Autowired
-    public CandidateServiceImpl(CandidateRepository candidateRepository, CandidateMapper candidateMapper) {
+    public CandidateServiceImpl(CandidateRepository candidateRepository, CandidateMapper candidateMapper, JobRepository jobRepository) {
         this.candidateRepository = candidateRepository;
         this.candidateMapper = candidateMapper;
+        this.jobRepository = jobRepository;
     }
 
     @Override
     public CandidateDto saveCandidate(CandidateDto candidateDto) {
         checkValidation(candidateDto, null);
+        Job job = validateJobExists(candidateDto.getJobId());
 
         candidateDto.setStatusDate(Date.valueOf(LocalDate.now()));
 
         Candidate candidate = candidateMapper.toCandidate(candidateDto);
+        candidate.setJob(job);
         Candidate savedCandidate = candidateRepository.save(candidate);
         return candidateMapper.toDTO(savedCandidate);
     }
@@ -109,8 +116,10 @@ public class CandidateServiceImpl implements CandidateService {
                 .orElseThrow(() -> new EntityNotFoundException("Candidate with id [%s] not found".formatted(candidateId)));
 
         checkValidation(candidateDto, candidate);
+        Job job = validateJobExists(candidateDto.getJobId());
 
         candidateMapper.updateCandidateFromDto(candidate, candidateDto);
+        candidate.setJob(job);
         candidateRepository.save(candidate);
     }
 
@@ -127,55 +136,64 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     private void partialUpdate(CandidateDto updateRequest, Candidate candidate) {
-        if (updateRequest.getUsername() != null) {
+        if (Objects.nonNull(updateRequest.getUsername())) {
             candidate.setUsername(updateRequest.getUsername());
         }
-        if (updateRequest.getBirthday() != null) {
+        if (Objects.nonNull(updateRequest.getBirthday())) {
             candidate.setBirthday(Date.valueOf(updateRequest.getBirthday()));
         }
-        if (updateRequest.getEmail() != null) {
+        if (Objects.nonNull(updateRequest.getEmail())) {
             candidate.setEmail(updateRequest.getEmail());
         }
-        if (updateRequest.getCity() != null) {
+        if (Objects.nonNull(updateRequest.getCity())) {
             candidate.setCity(updateRequest.getCity());
         }
-        if (updateRequest.getAddress() != null) {
+        if (Objects.nonNull(updateRequest.getAddress())) {
             candidate.setAddress(updateRequest.getAddress());
         }
-        if (updateRequest.getFaculty() != null) {
+        if (Objects.nonNull(updateRequest.getFaculty())) {
             candidate.setFaculty(updateRequest.getFaculty());
         }
-        if (updateRequest.getPhoneNumber() != null) {
+        if (Objects.nonNull(updateRequest.getPhoneNumber())) {
             candidate.setPhoneNumber(updateRequest.getPhoneNumber());
         }
-        if (updateRequest.getYearsOfExperience() != null) {
+        if (Objects.nonNull(updateRequest.getYearsOfExperience())) {
             candidate.setYearsOfExperience(updateRequest.getYearsOfExperience());
         }
-        if (updateRequest.getRecruitmentChannel() != null) {
+        if (Objects.nonNull(updateRequest.getRecruitmentChannel())) {
             candidate.setRecruitmentChannel(updateRequest.getRecruitmentChannel());
         }
-        if (updateRequest.getCandidateStatus() != null) {
+        if (Objects.nonNull(updateRequest.getCandidateStatus())) {
             candidate.setCandidateStatus(updateRequest.getCandidateStatus());
             candidate.setStatusDate(Date.valueOf(LocalDate.now()));
+        }
+        if (Objects.nonNull(updateRequest.getJobId())) {
+            Job job = validateJobExists(updateRequest.getJobId());
+            candidate.setJob(job);
         }
     }
 
     private void checkValidation(CandidateDto candidateDto, Candidate existingCandidate) {
-        if (existingCandidate == null || (candidateDto.getEmail() != null && !candidateDto.getEmail().equals(existingCandidate.getEmail()))) {
+        if (Objects.isNull(existingCandidate) || (Objects.nonNull(candidateDto.getEmail()) && !candidateDto.getEmail().equals(existingCandidate.getEmail()))) {
             if (candidateRepository.existsCandidateByEmail(candidateDto.getEmail())) {
                 throw new EntityAlreadyExistsException("Candidate with email " + candidateDto.getEmail() + " already exists");
             }
         }
 
-        if (existingCandidate == null || (candidateDto.getPhoneNumber() != null && !candidateDto.getPhoneNumber().equals(existingCandidate.getPhoneNumber()))) {
+        if (Objects.isNull(existingCandidate) || (Objects.nonNull(candidateDto.getPhoneNumber()) && !candidateDto.getPhoneNumber().equals(existingCandidate.getPhoneNumber()))) {
             if (candidateRepository.existsCandidateByPhoneNumber(candidateDto.getPhoneNumber())) {
                 throw new EntityAlreadyExistsException("Candidate with phone number " + candidateDto.getPhoneNumber() + " already exists");
             }
         }
 
-        if (candidateDto.getBirthday() != null && candidateDto.getBirthday().isAfter(LocalDate.now())) {
+        if (Objects.nonNull(candidateDto.getBirthday()) && candidateDto.getBirthday().isAfter(LocalDate.now())) {
             throw new InvalidBirthdayException("Invalid birthday");
         }
+    }
+
+    private Job validateJobExists(Integer jobId) {
+        return jobRepository.findById(jobId)
+                .orElseThrow(() -> new EntityNotFoundException("Job with id " + jobId + " not found"));
     }
 }
 

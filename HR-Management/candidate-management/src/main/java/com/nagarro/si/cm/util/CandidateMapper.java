@@ -28,20 +28,21 @@ public class CandidateMapper {
     }
 
     public CandidateDto toDTO(Candidate candidate) {
-        return new CandidateDto(
-                candidate.getId(),
-                candidate.getUsername(),
-                convertToLocalDate(candidate.getBirthday()),
-                candidate.getEmail(),
-                candidate.getCity(),
-                candidate.getAddress(),
-                candidate.getFaculty(),
-                candidate.getPhoneNumber(),
-                candidate.getYearsOfExperience(),
-                candidate.getRecruitmentChannel(),
-                candidate.getCandidateStatus(),
-                candidate.getStatusDate()
-        );
+        CandidateDto candidateDto = new CandidateDto();
+        candidateDto.setId(candidate.getId());
+        candidateDto.setUsername(candidate.getUsername());
+        candidateDto.setBirthday(convertToLocalDate(candidate.getBirthday()));
+        candidateDto.setEmail(candidate.getEmail());
+        candidateDto.setCity(candidate.getCity());
+        candidateDto.setAddress(candidate.getAddress());
+        candidateDto.setFaculty(candidate.getFaculty());
+        candidateDto.setPhoneNumber(candidate.getPhoneNumber());
+        candidateDto.setYearsOfExperience(candidate.getYearsOfExperience());
+        candidateDto.setRecruitmentChannel(candidate.getRecruitmentChannel());
+        candidateDto.setCandidateStatus(candidate.getCandidateStatus());
+        candidateDto.setStatusDate(candidate.getStatusDate());
+        candidateDto.setJobId(candidate.getJob().getId());
+        return candidateDto;
     }
 
     public void updateCandidateFromDto(Candidate candidate, CandidateDto candidateDto) {

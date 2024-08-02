@@ -10,6 +10,7 @@ import com.nagarro.si.um.mapper.InterviewMapper;
 import com.nagarro.si.um.repository.InterviewRepository;
 import com.nagarro.si.um.repository.UserRepository;
 import com.nagarro.si.um.util.CandidateServiceClientUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class InterviewService {
     private final InterviewRepository interviewRepository;
@@ -41,6 +43,8 @@ public class InterviewService {
     public InterviewDTO scheduleInterview(InterviewDTO interviewDTO) {
         CandidateDto candidateDto = candidateServiceClientUtil.getCandidateByEmail(interviewDTO.candidateEmail())
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Candidate with email = %s not found", interviewDTO.candidateEmail())));
+
+        log.info("Retrieved candidate: {}", candidateDto);
 
         Set<User> attendees = findUsersByEmails(interviewDTO.attendeesEmails());
 
