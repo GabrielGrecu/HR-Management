@@ -1,4 +1,4 @@
-package com.nagarro.si.cm.util;
+package com.nagarro.si.cm.mapper;
 
 import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;

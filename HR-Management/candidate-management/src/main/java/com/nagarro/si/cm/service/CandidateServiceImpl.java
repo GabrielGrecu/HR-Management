@@ -7,7 +7,7 @@ import com.nagarro.si.cm.exception.EntityAlreadyExistsException;
 import com.nagarro.si.cm.exception.EntityNotFoundException;
 import com.nagarro.si.cm.exception.InvalidBirthdayException;
 import com.nagarro.si.cm.repository.CandidateRepository;
-import com.nagarro.si.cm.util.CandidateMapper;
+import com.nagarro.si.cm.mapper.CandidateMapper;
 import com.nagarro.si.cm.util.CandidateSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;

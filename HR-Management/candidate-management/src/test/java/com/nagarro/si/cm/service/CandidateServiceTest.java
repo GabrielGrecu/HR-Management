@@ -3,7 +3,7 @@ package com.nagarro.si.cm.service;
 import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.cm.exception.EntityNotFoundException;
 import com.nagarro.si.cm.repository.CandidateRepository;
-import com.nagarro.si.cm.util.CandidateMapper;
+import com.nagarro.si.cm.mapper.CandidateMapper;
 import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.common.dto.Status;
 import org.junit.jupiter.api.BeforeEach;
