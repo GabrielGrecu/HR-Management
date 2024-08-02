@@ -1,5 +1,6 @@
 package com.nagarro.si.cm.dto;
 
+import com.nagarro.si.cm.CandidateManagementApplication;
 import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.common.dto.Status;
 import com.nagarro.si.common.validator.ValidationGroups;
@@ -18,7 +19,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+@SpringBootTest(classes = CandidateManagementApplication.class)
 public class CandidateDtoTest {
 
     @Autowired

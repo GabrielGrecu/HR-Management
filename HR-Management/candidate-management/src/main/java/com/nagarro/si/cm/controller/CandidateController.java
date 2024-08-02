@@ -3,6 +3,11 @@ package com.nagarro.si.cm.controller;
 import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.cm.service.CandidateService;
 import com.nagarro.si.common.validator.ValidationGroups;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +25,8 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
+@Tag(name = "Candidate Controller", description = "This is my Candidate Controller")
+@Slf4j
 @RestController
 @RequestMapping("/candidates")
 public class CandidateController {
@@ -66,11 +73,24 @@ public class CandidateController {
         candidateService.deleteCandidateById(candidateId);
     }
 
+    @Operation(
+            summary = "Update candidate",
+            description = "Update an existing candidate's information."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Candidate updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Candidate not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid update data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PutMapping("/{candidateId}")
     public void updateCandidate(
             @PathVariable("candidateId") Integer candidateId,
             @Validated(ValidationGroups.ValidateUpdate.class) @RequestBody CandidateDto updateRequest) throws ParseException {
+        log.debug("Request to update candidate with ID: {}", candidateId);
+        log.debug("Update request details: {}", updateRequest);
         candidateService.updateCandidate(candidateId, updateRequest);
+        log.info("Candidate with ID: {} updated successfully", candidateId);
     }
 
     @PatchMapping("/{candidateId}")
