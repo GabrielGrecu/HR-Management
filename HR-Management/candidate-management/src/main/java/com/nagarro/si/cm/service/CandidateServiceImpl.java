@@ -1,5 +1,6 @@
 package com.nagarro.si.cm.service;
 
+import com.nagarro.si.cm.exception.CityOrAddressNullException;
 import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.common.dto.Status;
@@ -175,6 +176,10 @@ public class CandidateServiceImpl implements CandidateService {
 
         if (candidateDto.getBirthday() != null && candidateDto.getBirthday().isAfter(LocalDate.now())) {
             throw new InvalidBirthdayException("Invalid birthday");
+        }
+
+        if ((candidateDto.getCity() == null && candidateDto.getAddress() != null) || (candidateDto.getCity() != null && candidateDto.getAddress() == null)) {
+            throw new CityOrAddressNullException("City or address is null");
         }
     }
 }

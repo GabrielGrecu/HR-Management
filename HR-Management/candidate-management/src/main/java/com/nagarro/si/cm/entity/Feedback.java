@@ -1,5 +1,7 @@
 package com.nagarro.si.cm.entity;
 
+import com.nagarro.si.common.entity.FeedbackStatus;
+import com.nagarro.si.common.entity.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,16 +26,16 @@ public class Feedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "comments", nullable = false)
+    @Column(name = "comment", nullable = false)
     private String comment;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_role", nullable = false)
+    @Column(name = "role", nullable = false)
     private UserRole role;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private FeedbackStatus status;
+    private FeedbackStatus status = FeedbackStatus.NO_GO;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "candidate_id", nullable = false)

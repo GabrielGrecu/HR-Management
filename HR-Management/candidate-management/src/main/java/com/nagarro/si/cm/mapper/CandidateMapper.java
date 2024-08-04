@@ -1,14 +1,25 @@
 package com.nagarro.si.cm.mapper;
 
 import com.nagarro.si.common.dto.CandidateDto;
+import com.nagarro.si.common.dto.FeedbackDto;
 import com.nagarro.si.cm.entity.Candidate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class CandidateMapper {
+
+    private final FeedbackMapper feedbackMapper;
+
+    @Autowired
+    public CandidateMapper(FeedbackMapper feedbackMapper) {
+        this.feedbackMapper = feedbackMapper;
+    }
 
     public Candidate toCandidate(CandidateDto candidateDto) {
         Candidate candidate = new Candidate();
@@ -24,10 +35,17 @@ public class CandidateMapper {
         candidate.setRecruitmentChannel(candidateDto.getRecruitmentChannel());
         candidate.setCandidateStatus(candidateDto.getCandidateStatus());
         candidate.setStatusDate(candidateDto.getStatusDate());
+        candidate.setFeedbackList(candidateDto.getFeedbacks().stream()
+                .map(feedbackMapper::toFeedback)
+                .collect(Collectors.toList()));
         return candidate;
     }
 
     public CandidateDto toDTO(Candidate candidate) {
+        List<FeedbackDto> feedbackDtos = candidate.getFeedbackList().stream()
+                .map(feedbackMapper::toDto)
+                .collect(Collectors.toList());
+
         return new CandidateDto(
                 candidate.getId(),
                 candidate.getUsername(),
@@ -40,7 +58,8 @@ public class CandidateMapper {
                 candidate.getYearsOfExperience(),
                 candidate.getRecruitmentChannel(),
                 candidate.getCandidateStatus(),
-                candidate.getStatusDate()
+                candidate.getStatusDate(),
+                feedbackDtos
         );
     }
 
@@ -55,6 +74,9 @@ public class CandidateMapper {
         candidate.setRecruitmentChannel(candidateDto.getRecruitmentChannel());
         candidate.setCandidateStatus(candidateDto.getCandidateStatus());
         candidate.setStatusDate(convertToDate(LocalDate.now()));
+        candidate.setFeedbackList(candidateDto.getFeedbacks().stream()
+                .map(feedbackMapper::toFeedback)
+                .collect(Collectors.toList()));
     }
 
     private Date convertToDate(LocalDate localDate) {

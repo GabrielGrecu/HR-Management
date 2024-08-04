@@ -1,4 +1,4 @@
-package com.nagarro.si.cm.entity;
+package com.nagarro.si.common.entity;
 
 public enum UserRole {
     HR,
