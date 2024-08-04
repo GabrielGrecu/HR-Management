@@ -37,6 +37,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(CityOrAddressNullException.class)
+    public ResponseEntity<ErrorResponse> handleCityOrAddressNullException(CityOrAddressNullException exception) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                exception.getMessage()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(InvalidBirthdayException.class)
     public ResponseEntity<ErrorResponse> handleInvalidBirthdayException(InvalidBirthdayException exception) {
         ErrorResponse errorResponse = new ErrorResponse(
