@@ -23,7 +23,8 @@ Description: This command starts the services and the containers run in the back
 The containers should be up and running and accessible at the specified ports :
 - 8080 for candidate-management
 - 8081 for user-management) 
-- 3307 for mysql
+- 3307 for mysql candidates-database
+- 3308 for mysql users-database
 
 # Optional
 

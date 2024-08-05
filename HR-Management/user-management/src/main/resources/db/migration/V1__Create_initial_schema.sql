@@ -1,4 +1,4 @@
-CREATE SCHEMA user_management;
+CREATE SCHEMA IF NOT EXISTS user_management;
 USE user_management;
 CREATE TABLE IF NOT EXISTS Role
 (
