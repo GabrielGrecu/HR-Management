@@ -1,8 +1,11 @@
 package com.nagarro.si.cm.service;
 
 import com.nagarro.si.cm.entity.Candidate;
+import com.nagarro.si.cm.entity.Job;
 import com.nagarro.si.cm.exception.EntityNotFoundException;
 import com.nagarro.si.cm.repository.CandidateRepository;
+import com.nagarro.si.cm.mapper.CandidateMapper;
+import com.nagarro.si.cm.repository.JobRepository;
 import com.nagarro.si.cm.mapper.CandidateMapper;
 import com.nagarro.si.common.dto.CandidateDto;
 import com.nagarro.si.common.dto.Status;
@@ -36,21 +39,29 @@ class CandidateServiceTest {
     @Mock
     private CandidateMapper candidateMapper;
 
+    @Mock
+    private JobRepository jobRepository;
+
     @InjectMocks
     private CandidateServiceImpl candidateService;
 
     private Candidate candidate;
     private CandidateDto candidateDto;
+    private Job job;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        job = new Job();
+        job.setId(1);
+
         candidate = new Candidate();
         candidate.setId(1);
         candidate.setUsername("john_doe");
         candidate.setEmail("john.doe@example.com");
         candidate.setPhoneNumber("1234567890");
         candidate.setCandidateStatus(Status.IN_PROGRESS);
+        candidate.setJob(job);
 
         candidate.setBirthday(Date.valueOf("1994-07-11"));
         candidateDto = new CandidateDto();
@@ -59,6 +70,7 @@ class CandidateServiceTest {
         candidateDto.setEmail("john.doe@example.com");
         candidateDto.setPhoneNumber("1234567890");
         candidateDto.setBirthday(LocalDate.of(1994, 7, 11));
+        candidateDto.setJobId(job.getId());
     }
 
     @Test
@@ -66,6 +78,7 @@ class CandidateServiceTest {
         when(candidateRepository.existsCandidateByUsername(candidateDto.getUsername())).thenReturn(false);
         when(candidateRepository.existsCandidateByEmail(candidateDto.getEmail())).thenReturn(false);
         when(candidateRepository.existsCandidateByPhoneNumber(candidateDto.getPhoneNumber())).thenReturn(false);
+        when(jobRepository.findById(candidateDto.getJobId())).thenReturn(Optional.of(job));
         when(candidateMapper.toCandidate(candidateDto)).thenReturn(candidate);
         when(candidateRepository.save(candidate)).thenReturn(candidate);
         when(candidateMapper.toDTO(candidate)).thenReturn(candidateDto);
@@ -77,6 +90,15 @@ class CandidateServiceTest {
         verify(candidateRepository).save(candidate);
     }
 
+    @Test
+    void testSaveCandidate_JobNotFound() {
+        when(candidateRepository.existsCandidateByUsername(candidateDto.getUsername())).thenReturn(false);
+        when(candidateRepository.existsCandidateByEmail(candidateDto.getEmail())).thenReturn(false);
+        when(candidateRepository.existsCandidateByPhoneNumber(candidateDto.getPhoneNumber())).thenReturn(false);
+        when(jobRepository.findById(candidateDto.getJobId())).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> candidateService.saveCandidate(candidateDto));
+    }
 
     @Test
     void testGetAllCandidates() {
@@ -132,6 +154,7 @@ class CandidateServiceTest {
         when(candidateRepository.existsCandidateByUsername(anyString())).thenReturn(false);
         when(candidateRepository.existsCandidateByEmail(anyString())).thenReturn(false);
         when(candidateRepository.existsCandidateByPhoneNumber(anyString())).thenReturn(false);
+        when(jobRepository.findById(candidateDto.getJobId())).thenReturn(Optional.of(job));
         doNothing().when(candidateMapper).updateCandidateFromDto(any(Candidate.class), any(CandidateDto.class));
         when(candidateRepository.save(candidate)).thenReturn(candidate);
 
@@ -146,6 +169,7 @@ class CandidateServiceTest {
         when(candidateRepository.existsCandidateByUsername(anyString())).thenReturn(false);
         when(candidateRepository.existsCandidateByEmail(anyString())).thenReturn(false);
         when(candidateRepository.existsCandidateByPhoneNumber(anyString())).thenReturn(false);
+        when(jobRepository.findById(candidateDto.getJobId())).thenReturn(Optional.of(job));
         when(candidateRepository.save(candidate)).thenReturn(candidate);
 
         candidateService.patchCandidate(candidate.getId(), candidateDto);

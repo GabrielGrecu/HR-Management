@@ -11,10 +11,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -50,10 +50,13 @@ public class CandidateDto {
 
     private Date statusDate;
 
-    private List<FeedbackDto> feedbacks= new ArrayList<>();
+    private List<FeedbackDto> feedbacks = new ArrayList<>();
+
+    @NotNull(message = "Job ID is required", groups = ValidationGroups.ValidateUpdate.class)
+    private Integer jobId;
 
     public CandidateDto(int id, String username, LocalDate birthday, String email, String city, String address, String faculty,
-                        String phoneNumber, Integer yearsOfExperience, String recruitmentChannel, Status candidateStatus, Date statusDate) {
+                        String phoneNumber, Integer yearsOfExperience, String recruitmentChannel, Status candidateStatus, Date statusDate, Integer jobId) {
         this.id = id;
         this.username = username;
         this.birthday = birthday;
@@ -66,5 +69,6 @@ public class CandidateDto {
         this.recruitmentChannel = recruitmentChannel;
         this.candidateStatus = candidateStatus;
         this.statusDate = statusDate;
+        this.jobId = jobId;
     }
 }
