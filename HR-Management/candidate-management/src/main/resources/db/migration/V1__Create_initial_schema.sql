@@ -1,4 +1,4 @@
-
+CREATE SCHEMA IF NOT EXISTS candidate_management;
 USE candidate_management;
 
 CREATE TABLE candidate_management.candidate
