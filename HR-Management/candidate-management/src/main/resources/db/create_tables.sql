@@ -39,9 +39,9 @@ CREATE TABLE candidate_management.document (
 
 CREATE TABLE candidate_management.feedback (
 	id INT NOT NULL AUTO_INCREMENT,
-    feedback_comm VARCHAR(255) NOT NULL,
-    user_role VARCHAR(45) NOT NULL,
-    feedback_status VARCHAR(45) NOT NULL,
+    comment VARCHAR(255) NOT NULL,
+    role VARCHAR(45) NOT NULL,
+    status VARCHAR(45) NOT NULL,
     candidate_id INT NOT NULL,
     PRIMARY KEY(id),
     CONSTRAINT fk_fb_candidate_id

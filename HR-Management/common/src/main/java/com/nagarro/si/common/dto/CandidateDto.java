@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,8 +41,8 @@ public class CandidateDto {
     @Pattern(regexp = "^([+]|0)\\d{1,14}$", message = "Phone number is not valid", groups = {ValidationGroups.ValidateUpdate.class, ValidationGroups.ValidatePatch.class})
     private String phoneNumber;
 
-    @NotNull(message = "Years of experience is required", groups = ValidationGroups.ValidateUpdate.class)
-    private Integer yearsOfExperience;
+
+    private Integer yearsOfExperience = 0;
 
     private String recruitmentChannel;
 
@@ -48,6 +50,19 @@ public class CandidateDto {
 
     private Date statusDate;
 
+    private List<FeedbackDto> feedbacks = new ArrayList<>();
+
     @NotNull(message = "Job ID is required", groups = ValidationGroups.ValidateUpdate.class)
     private Integer jobId;
+
+    public CandidateDto(int id, String username, LocalDate birthday, String email, String city, String address, String phoneNumber, Integer jobId) {
+        this.id = id;
+        this.username = username;
+        this.birthday = birthday;
+        this.email = email;
+        this.city = city;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.jobId = jobId;
+    }
 }

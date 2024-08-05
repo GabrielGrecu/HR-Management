@@ -1,16 +1,18 @@
 package com.nagarro.si.cm.service;
 
-import com.nagarro.si.cm.entity.Job;
-import com.nagarro.si.cm.repository.JobRepository;
-import com.nagarro.si.common.dto.CandidateDto;
+
 import com.nagarro.si.cm.entity.Candidate;
-import com.nagarro.si.common.dto.Status;
+import com.nagarro.si.cm.entity.Job;
+import com.nagarro.si.cm.exception.CityOrAddressNullException;
 import com.nagarro.si.cm.exception.EntityAlreadyExistsException;
 import com.nagarro.si.cm.exception.EntityNotFoundException;
 import com.nagarro.si.cm.exception.InvalidBirthdayException;
+import com.nagarro.si.cm.mapper.CandidateMapper;
 import com.nagarro.si.cm.repository.CandidateRepository;
-import com.nagarro.si.cm.util.CandidateMapper;
+import com.nagarro.si.cm.repository.JobRepository;
 import com.nagarro.si.cm.util.CandidateSpecification;
+import com.nagarro.si.common.dto.CandidateDto;
+import com.nagarro.si.common.dto.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -188,6 +190,10 @@ public class CandidateServiceImpl implements CandidateService {
 
         if (Objects.nonNull(candidateDto.getBirthday()) && candidateDto.getBirthday().isAfter(LocalDate.now())) {
             throw new InvalidBirthdayException("Invalid birthday");
+        }
+
+        if ((candidateDto.getCity() == null && candidateDto.getAddress() != null) || (candidateDto.getCity() != null && candidateDto.getAddress() == null)) {
+            throw new CityOrAddressNullException("City or address is null");
         }
     }
 
