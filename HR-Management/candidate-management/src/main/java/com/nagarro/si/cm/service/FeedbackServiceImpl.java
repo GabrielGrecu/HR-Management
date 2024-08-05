@@ -1,12 +1,12 @@
 package com.nagarro.si.cm.service;
 
-import com.nagarro.si.common.dto.FeedbackDto;
 import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.cm.entity.Feedback;
 import com.nagarro.si.cm.exception.EntityNotFoundException;
 import com.nagarro.si.cm.mapper.FeedbackMapper;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import com.nagarro.si.cm.repository.FeedbackRepository;
+import com.nagarro.si.common.dto.FeedbackDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +30,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public FeedbackDto saveFeedback(FeedbackDto feedbackDto) {
         Candidate candidate = candidateRepository.findById(feedbackDto.getCandidateId())
-                .orElseThrow(() -> new EntityNotFoundException("Candidate not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Candidate with id " + feedbackDto.getCandidateId() + " not found"));
 
         Feedback feedback = feedbackMapper.toFeedback(feedbackDto);
         feedback.setCandidate(candidate);
@@ -41,7 +41,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public void deleteFeedback(int feedbackId) {
         Feedback feedback = feedbackRepository.findById(feedbackId)
-                .orElseThrow(() -> new EntityNotFoundException("Feedback not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Feedback with id " + feedbackId + " not found"));
         feedbackRepository.delete(feedback);
     }
 
