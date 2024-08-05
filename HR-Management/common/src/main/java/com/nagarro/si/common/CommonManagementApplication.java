@@ -1,4 +1,4 @@
-package com.nagarro.si.cm;
+package com.nagarro.si.common;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
