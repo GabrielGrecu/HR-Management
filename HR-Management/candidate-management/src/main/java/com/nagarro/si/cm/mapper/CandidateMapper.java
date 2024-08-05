@@ -33,19 +33,19 @@ public class CandidateMapper {
         candidate.setEmail(candidateDto.getEmail());
         candidate.setCity(candidateDto.getCity());
         candidate.setAddress(candidateDto.getAddress());
-        candidate.setFaculty(candidateDto.getFaculty());
         candidate.setPhoneNumber(candidateDto.getPhoneNumber());
-        candidate.setYearsOfExperience(candidateDto.getYearsOfExperience());
         candidate.setRecruitmentChannel(candidateDto.getRecruitmentChannel());
         candidate.setCandidateStatus(candidateDto.getCandidateStatus());
         candidate.setStatusDate(candidateDto.getStatusDate());
-        candidate.setFeedbackList(candidateDto.getFeedbacks().stream()
-                .map(feedbackMapper::toFeedback)
-                .collect(Collectors.toList()));
 
         Job job = jobRepository.findById(candidateDto.getJobId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid job ID: " + candidateDto.getJobId()));
         candidate.setJob(job);
+
+        candidate.setFeedbackList(candidateDto.getFeedbacks().stream()
+                .map(feedbackMapper::toFeedback)
+                .collect(Collectors.toList()));
+
         return candidate;
     }
 
@@ -77,12 +77,12 @@ public class CandidateMapper {
         candidate.setBirthday(convertToDate(candidateDto.getBirthday()));
         candidate.setEmail(candidateDto.getEmail());
         candidate.setCity(candidateDto.getCity());
-        candidate.setFaculty(candidateDto.getFaculty());
+        candidate.setAddress(candidateDto.getAddress());
         candidate.setPhoneNumber(candidateDto.getPhoneNumber());
-        candidate.setYearsOfExperience(candidateDto.getYearsOfExperience());
         candidate.setRecruitmentChannel(candidateDto.getRecruitmentChannel());
         candidate.setCandidateStatus(candidateDto.getCandidateStatus());
         candidate.setStatusDate(convertToDate(LocalDate.now()));
+
         candidate.setFeedbackList(candidateDto.getFeedbacks().stream()
                 .map(feedbackMapper::toFeedback)
                 .collect(Collectors.toList()));
