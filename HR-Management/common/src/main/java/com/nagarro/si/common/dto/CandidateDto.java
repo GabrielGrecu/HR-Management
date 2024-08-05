@@ -51,4 +51,20 @@ public class CandidateDto {
     private Date statusDate;
 
     private List<FeedbackDto> feedbacks= new ArrayList<>();
+
+    public CandidateDto(int id, String username, LocalDate birthday, String email, String city, String address, String faculty,
+                        String phoneNumber, Integer yearsOfExperience, String recruitmentChannel, Status candidateStatus, Date statusDate) {
+        this.id = id;
+        this.username = username;
+        this.birthday = birthday;
+        this.email = email;
+        this.city = city;
+        this.address = address;
+        this.faculty = faculty;
+        this.phoneNumber = phoneNumber;
+        this.yearsOfExperience = yearsOfExperience;
+        this.recruitmentChannel = recruitmentChannel;
+        this.candidateStatus = candidateStatus;
+        this.statusDate = statusDate;
+    }
 }
