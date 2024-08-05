@@ -9,7 +9,10 @@ import com.nagarro.si.um.mapper.UserMapper;
 import com.nagarro.si.um.repository.RoleRepository;
 import com.nagarro.si.um.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -17,12 +20,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDTO createUser(UserDTO userDTO) {
@@ -34,6 +39,7 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("Role with ID " + userDTO.roleId() + " not found"));
 
         User user = userMapper.toUser(userDTO, role);
+        user.setPassword(passwordEncoder.encode(userDTO.password()));
         User savedUser = userRepository.save(user);
         return userMapper.toUserDTO(savedUser);
     }
@@ -52,6 +58,10 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("Role with ID " + userDTO.roleId() + " not found"));
 
         userMapper.updateUserFromDTO(user, userDTO, role);
+
+        if (Objects.nonNull(userDTO.password()) && !userDTO.password().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userDTO.password()));
+        }
 
         User updatedUser = userRepository.save(user);
         return userMapper.toUserDTO(updatedUser);

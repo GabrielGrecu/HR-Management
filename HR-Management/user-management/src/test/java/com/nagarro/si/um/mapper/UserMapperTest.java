@@ -28,7 +28,7 @@ class UserMapperTest {
         user.setRole(role);
 
         userDTO = new UserDTO(
-                "Gabriel Grecu",
+                "grecualexandrugabriel@yahoo.com",
                 "grecualexandrugabriel@yahoo.com",
                 "password",
                 1L

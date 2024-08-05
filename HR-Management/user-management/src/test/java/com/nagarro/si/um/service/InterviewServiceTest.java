@@ -249,7 +249,7 @@ public class InterviewServiceTest {
         when(userRepository.findByEmail("hr2@yahoo.com")).thenReturn(Optional.of(hrUser2));
         Timestamp startDate = Timestamp.valueOf("2024-07-26 14:00:00");
         Timestamp endDate = Timestamp.valueOf("2024-07-26 14:30:00");
-        when(interviewRepository.findOverlappingInterviews(3L, startDate, endDate))
+        when(interviewRepository.findOverlappingInterviews(1L, startDate, endDate))
                 .thenReturn(List.of(new Interview()));
         InterviewDTO interviewDTOWithOverlap = new InterviewDTO(
                 Arrays.asList("pte@gmail.com", "hr1@yahoo.com", "hr2@yahoo.com"),
@@ -264,7 +264,7 @@ public class InterviewServiceTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 interviewService.scheduleInterview(interviewDTOWithOverlap));
 
-        assertEquals("User with email = hr2@yahoo.com is already booked for an interview", exception.getMessage());
+        assertEquals("User with email = pte@gmail.com is already booked for an interview", exception.getMessage());
         verifyNoInteractions(interviewMapper);
     }
 }
