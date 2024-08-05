@@ -41,8 +41,8 @@ public class CandidateDto {
     @Pattern(regexp = "^([+]|0)\\d{1,14}$", message = "Phone number is not valid", groups = {ValidationGroups.ValidateUpdate.class, ValidationGroups.ValidatePatch.class})
     private String phoneNumber;
 
-    @NotNull(message = "Years of experience is required", groups = ValidationGroups.ValidateUpdate.class)
-    private Integer yearsOfExperience;
+
+    private Integer yearsOfExperience = 0;
 
     private String recruitmentChannel;
 
@@ -55,20 +55,14 @@ public class CandidateDto {
     @NotNull(message = "Job ID is required", groups = ValidationGroups.ValidateUpdate.class)
     private Integer jobId;
 
-    public CandidateDto(int id, String username, LocalDate birthday, String email, String city, String address, String faculty,
-                        String phoneNumber, Integer yearsOfExperience, String recruitmentChannel, Status candidateStatus, Date statusDate, Integer jobId) {
+    public CandidateDto(int id, String username, LocalDate birthday, String email, String city, String address, String phoneNumber, Integer jobId) {
         this.id = id;
         this.username = username;
         this.birthday = birthday;
         this.email = email;
         this.city = city;
         this.address = address;
-        this.faculty = faculty;
         this.phoneNumber = phoneNumber;
-        this.yearsOfExperience = yearsOfExperience;
-        this.recruitmentChannel = recruitmentChannel;
-        this.candidateStatus = candidateStatus;
-        this.statusDate = statusDate;
         this.jobId = jobId;
     }
 }
