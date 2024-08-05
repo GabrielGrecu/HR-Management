@@ -1,4 +1,4 @@
-CREATE SCHEMA candidate_management;
+
 USE candidate_management;
 
 CREATE TABLE candidate_management.candidate
@@ -62,8 +62,3 @@ CREATE TABLE candidate_management.feedback
             ON DELETE CASCADE
             ON UPDATE CASCADE
 );
-
-CREATE USER 'si-2024'@'%' IDENTIFIED BY 'internship2024';
-GRANT ALL PRIVILEGES ON candidate_management.* TO 'si-2024'@'%';
-GRANT ALL PRIVILEGES ON user_management.* TO 'si-2024'@'%';
-FLUSH PRIVILEGES;

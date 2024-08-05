@@ -23,7 +23,7 @@ public class CandidateDtoTest {
     @Autowired
     private LocalValidatorFactoryBean validatorFactory;
 
-    //@ParameterizedTest
+    @ParameterizedTest
     @MethodSource("candidateDtoProvider")
     void testCandidateDtoValidations(int id, String username, LocalDate birthday, String email, String city,
                                      String address, String phoneNumber, Integer jobId, int expectedViolationCount) {
