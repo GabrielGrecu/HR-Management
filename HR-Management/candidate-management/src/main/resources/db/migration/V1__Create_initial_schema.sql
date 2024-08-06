@@ -4,7 +4,7 @@ USE candidate_management;
 CREATE TABLE candidate_management.candidate
 (
     id                  INT         NOT NULL AUTO_INCREMENT,
-    username            VARCHAR(45) NOT NULL UNIQUE,
+    username            VARCHAR(45) NOT NULL,
     birthday            DATE        NULL,
     email               VARCHAR(45) NOT NULL UNIQUE,
     phone_number        VARCHAR(45) NOT NULL UNIQUE,
