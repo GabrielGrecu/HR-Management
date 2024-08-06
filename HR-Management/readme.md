@@ -51,3 +51,5 @@ The containers should be up and running and accessible at the specified ports :
 8. You can list running Docker containers:
 
 # docker ps
+
+9. To start the application locally u need to create the schemas and run create_user.sql manually.
