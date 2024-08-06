@@ -33,6 +33,8 @@ public class CandidateMapper {
         candidate.setEmail(candidateDto.getEmail());
         candidate.setCity(candidateDto.getCity());
         candidate.setAddress(candidateDto.getAddress());
+        candidate.setFaculty(candidateDto.getFaculty());
+        candidate.setYearsOfExperience(candidateDto.getYearsOfExperience());
         candidate.setPhoneNumber(candidateDto.getPhoneNumber());
         candidate.setRecruitmentChannel(candidateDto.getRecruitmentChannel());
         candidate.setCandidateStatus(candidateDto.getCandidateStatus());
@@ -78,6 +80,8 @@ public class CandidateMapper {
         candidate.setEmail(candidateDto.getEmail());
         candidate.setCity(candidateDto.getCity());
         candidate.setAddress(candidateDto.getAddress());
+        candidate.setFaculty(candidateDto.getFaculty());
+        candidate.setYearsOfExperience(candidateDto.getYearsOfExperience());
         candidate.setPhoneNumber(candidateDto.getPhoneNumber());
         candidate.setRecruitmentChannel(candidateDto.getRecruitmentChannel());
         candidate.setCandidateStatus(candidateDto.getCandidateStatus());
