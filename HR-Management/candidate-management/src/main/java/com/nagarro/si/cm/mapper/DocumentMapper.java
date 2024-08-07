@@ -2,7 +2,10 @@ package com.nagarro.si.cm.mapper;
 
 import com.nagarro.si.cm.dto.DocumentDto;
 import com.nagarro.si.cm.entity.Document;
+import com.nagarro.si.cm.exception.InvalidConversionException;
 import org.springframework.stereotype.Component;
+
+import java.sql.Blob;
 
 @Component
 public class DocumentMapper {
@@ -16,13 +19,13 @@ public class DocumentMapper {
         return documentDto;
     }
 
-    private byte[] convertToByteArray(java.sql.Blob blob) {
+    private byte[] convertToByteArray(Blob blob) {
         try {
             if (blob != null) {
                 return blob.getBytes(1, (int) blob.length());
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error converting Blob to byte array", e);
+            throw new InvalidConversionException("Error converting Blob to byte array: " + e.getMessage());
         }
         return null;
     }

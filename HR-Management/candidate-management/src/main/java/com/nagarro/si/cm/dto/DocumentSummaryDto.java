@@ -1,16 +1,13 @@
 package com.nagarro.si.cm.dto;
 
 import com.nagarro.si.cm.entity.DocumentType;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.NoArgsConstructor;
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class DocumentDto {
+public class DocumentSummaryDto {
 
     private int id;
 
@@ -19,9 +16,4 @@ public class DocumentDto {
 
     @NotNull(message = "Document name is required")
     private String name;
-
-    @NotNull(message = "Document content is required")
-    private byte[] content;
-
-    private int candidateId;
 }

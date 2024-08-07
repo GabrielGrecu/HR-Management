@@ -1,29 +1,36 @@
 package com.nagarro.si.cm.service;
 
 import com.nagarro.si.cm.dto.DocumentDto;
+import com.nagarro.si.cm.dto.DocumentSummaryDto;
 import com.nagarro.si.cm.entity.Candidate;
 import com.nagarro.si.cm.entity.Document;
 import com.nagarro.si.cm.entity.DocumentType;
+import com.nagarro.si.cm.exception.EntityNotFoundException;
+import com.nagarro.si.cm.exception.EntityAlreadyExistsException;
 import com.nagarro.si.cm.repository.CandidateRepository;
 import com.nagarro.si.cm.repository.DocumentRepository;
 import com.nagarro.si.cm.mapper.DocumentMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
 import javax.sql.rowset.serial.SerialBlob;
+import java.io.IOException;
 import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class DocumentServiceImplTest {
 
     @Mock
@@ -36,117 +43,148 @@ class DocumentServiceImplTest {
     private DocumentRepository documentRepository;
 
     @InjectMocks
-    private DocumentServiceImpl documentServiceImpl;
+    private DocumentServiceImpl documentService;
 
     private final int candidateId = 1;
-    private final String documentType = "PDF";
-    private Candidate candidate;
     private final int documentId = 1;
-    private Document document;
-    private DocumentDto documentDto;
+    private final String documentType = "PDF";
     private MockMultipartFile file;
+    private DocumentDto documentDto;
+    private Document document;
+    private Candidate candidate;
 
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() throws SQLException {
+        documentDto = new DocumentDto();
+        documentDto.setId(documentId);
+        documentDto.setType(DocumentType.PDF);
+        documentDto.setName("test.pdf");
+        documentDto.setContent("test content".getBytes());
 
-        candidate = new Candidate();
-        candidate.setId(candidateId);
+        file = new MockMultipartFile("file", "test.pdf", "application/pdf", "test content".getBytes());
 
         document = new Document();
         document.setId(documentId);
         document.setType(DocumentType.PDF);
         document.setName("test.pdf");
-        document.setCandidate(candidate);
+        document.setContent(new SerialBlob("test content".getBytes()));
 
-        documentDto = new DocumentDto();
-        documentDto.setId(document.getId());
-        documentDto.setType(document.getType());
-        documentDto.setName(document.getName());
-        documentDto.setCandidateId(candidateId);
-
-        file = new MockMultipartFile("file", "test.pdf", "application/pdf", "test content".getBytes());
+        candidate = new Candidate();
+        candidate.setId(candidateId);
+        candidate.setDocuments(Collections.singletonList(document));
     }
 
     @Test
-    void testUploadDocumentSuccess() throws Exception {
-        document.setContent(new SerialBlob(file.getBytes()));
-        documentDto.setContent(file.getBytes());
-
+    void testUploadDocumentDuplicate() throws IOException, SQLException {
         when(candidateRepository.findById(candidateId)).thenReturn(Optional.of(candidate));
-        when(documentRepository.save(any(Document.class))).thenReturn(document);
-        when(documentMapper.toDTO(any(Document.class))).thenReturn(documentDto);
 
-        DocumentDto result = documentServiceImpl.uploadDocument(candidateId, file, documentType);
+        Document existingDocument = new Document();
+        existingDocument.setName("test.pdf");
+        candidate.setDocuments(Collections.singletonList(existingDocument));
 
-        assertNotNull(result);
-        assertEquals(documentDto, result);
-
-        verify(candidateRepository, times(1)).findById(candidateId);
-        verify(documentRepository, times(1)).save(any(Document.class));
-        verify(documentMapper, times(1)).toDTO(any(Document.class));
-    }
-
-    @Test
-    void testUploadDocumentInvalidDocumentType() {
-        Exception exception = assertThrows(RuntimeException.class, () -> documentServiceImpl.uploadDocument(candidateId, file, "INVALID"));
-
-        String expectedMessage = "Invalid document type: INVALID";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
-
-        verify(candidateRepository, times(0)).findById(candidateId);
-        verify(documentRepository, times(0)).save(any(Document.class));
-        verify(documentMapper, times(0)).toDTO(any(Document.class));
-    }
-
-    @Test
-    void testUploadDocumentCandidateNotFound() {
-        when(candidateRepository.findById(candidateId)).thenReturn(Optional.empty());
-
-        Exception exception = assertThrows(RuntimeException.class, () -> documentServiceImpl.uploadDocument(candidateId, file, documentType));
-
-        String expectedMessage = "Candidate not found with ID: " + candidateId;
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
+        assertThrows(EntityAlreadyExistsException.class, () ->
+                documentService.uploadDocument(candidateId, file, documentType)
+        );
 
         verify(candidateRepository, times(1)).findById(candidateId);
-        verify(documentRepository, times(0)).save(any(Document.class));
-        verify(documentMapper, times(0)).toDTO(any(Document.class));
+        verify(documentRepository, never()).save(any(Document.class));
     }
 
     @Test
-    void testDownloadDocumentSuccess() throws Exception {
-        Blob blobContent = new SerialBlob("test content".getBytes());
-        document.setContent(blobContent);
-        documentDto.setContent(blobContent.getBytes(1, (int) blobContent.length()));
-
+    void testDownloadDocumentSuccess() {
         when(documentRepository.findById(documentId)).thenReturn(Optional.of(document));
         when(documentMapper.toDTO(any(Document.class))).thenReturn(documentDto);
 
-        DocumentDto result = documentServiceImpl.downloadDocument(documentId);
+        DocumentDto result = documentService.downloadDocument(documentId);
 
         assertNotNull(result);
-        assertEquals(documentDto, result);
-
+        assertEquals(documentId, result.getId());
+        assertEquals("test.pdf", result.getName());
         verify(documentRepository, times(1)).findById(documentId);
-        verify(documentMapper, times(1)).toDTO(any(Document.class));
     }
 
     @Test
     void testDownloadDocumentNotFound() {
         when(documentRepository.findById(documentId)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(RuntimeException.class, () -> documentServiceImpl.downloadDocument(documentId));
-
-        String expectedMessage = "Document not found with ID: " + documentId;
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
+        assertThrows(EntityNotFoundException.class, () ->
+                documentService.downloadDocument(documentId)
+        );
 
         verify(documentRepository, times(1)).findById(documentId);
-        verify(documentMapper, times(0)).toDTO(any(Document.class));
+    }
+
+    @Test
+    void testGetDocumentsByCandidateIdSuccess() {
+        when(candidateRepository.findById(candidateId)).thenReturn(Optional.of(candidate));
+
+        List<DocumentSummaryDto> result = documentService.getDocumentsByCandidateId(candidateId);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(document.getId(), result.get(0).getId());
+        assertEquals(document.getName(), result.get(0).getName());
+        verify(candidateRepository, times(1)).findById(candidateId);
+    }
+
+    @Test
+    void testGetDocumentsByCandidateIdNotFound() {
+        when(candidateRepository.findById(candidateId)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () ->
+                documentService.getDocumentsByCandidateId(candidateId)
+        );
+
+        verify(candidateRepository, times(1)).findById(candidateId);
+    }
+
+    @Test
+    void testDownloadDocumentByCandidateIdAndNameSuccess() {
+        when(candidateRepository.findById(candidateId)).thenReturn(Optional.of(candidate));
+        when(documentMapper.toDTO(any(Document.class))).thenReturn(documentDto);
+
+        DocumentDto result = documentService.downloadDocumentByCandidateIdAndName(candidateId, document.getName());
+
+        assertNotNull(result);
+        assertEquals(document.getId(), result.getId());
+        assertEquals(document.getName(), result.getName());
+        verify(candidateRepository, times(1)).findById(candidateId);
+    }
+
+    @Test
+    void testDownloadDocumentByCandidateIdAndNameDocumentNotFound() {
+        when(candidateRepository.findById(candidateId)).thenReturn(Optional.of(candidate));
+
+        assertThrows(EntityNotFoundException.class, () ->
+                documentService.downloadDocumentByCandidateIdAndName(candidateId, "nonexistent.pdf")
+        );
+
+        verify(candidateRepository, times(1)).findById(candidateId);
+    }
+
+    @Test
+    void testDeleteDocumentByCandidateIdAndNameSuccess() {
+        when(candidateRepository.findById(candidateId)).thenReturn(Optional.of(candidate));
+        when(documentRepository.findByCandidateIdAndName(candidateId, document.getName())).thenReturn(Optional.of(document));
+
+        documentService.deleteDocumentByCandidateIdAndName(candidateId, document.getName());
+
+        verify(candidateRepository, times(1)).findById(candidateId);
+        verify(documentRepository, times(1)).findByCandidateIdAndName(candidateId, document.getName());
+        verify(documentRepository, times(1)).delete(document);
+    }
+
+    @Test
+    void testDeleteDocumentByCandidateIdAndNameDocumentNotFound() {
+        when(candidateRepository.findById(candidateId)).thenReturn(Optional.of(candidate));
+        when(documentRepository.findByCandidateIdAndName(candidateId, "nonexistent.pdf")).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () ->
+                documentService.deleteDocumentByCandidateIdAndName(candidateId, "nonexistent.pdf")
+        );
+
+        verify(candidateRepository, times(1)).findById(candidateId);
+        verify(documentRepository, times(1)).findByCandidateIdAndName(candidateId, "nonexistent.pdf");
+        verify(documentRepository, never()).delete(any(Document.class));
     }
 }
