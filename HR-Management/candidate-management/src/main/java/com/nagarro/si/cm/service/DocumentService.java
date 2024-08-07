@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface DocumentService {
-    DocumentDto uploadDocument(int candidateId,
+    DocumentSummaryDto uploadDocument(int candidateId,
                                MultipartFile file,
                                String documentType) throws IOException, SQLException;
 

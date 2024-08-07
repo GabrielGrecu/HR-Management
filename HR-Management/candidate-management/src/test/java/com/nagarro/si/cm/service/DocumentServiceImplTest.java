@@ -20,15 +20,19 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
-import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.never;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DocumentServiceImplTest {
@@ -75,7 +79,42 @@ class DocumentServiceImplTest {
     }
 
     @Test
-    void testUploadDocumentDuplicate() throws IOException, SQLException {
+    void testUploadDocumentSuccess() throws IOException, SQLException {
+        Candidate candidate = new Candidate();
+        candidate.setId(candidateId);
+        candidate.setDocuments(Collections.emptyList());
+
+        Document newDocument = new Document();
+        newDocument.setId(2);
+        newDocument.setName("test.pdf");
+        newDocument.setType(DocumentType.PDF);
+        newDocument.setContent(new SerialBlob("test content".getBytes()));
+
+        DocumentSummaryDto documentSummaryDto = new DocumentSummaryDto();
+        documentSummaryDto.setId(newDocument.getId());
+        documentSummaryDto.setName(newDocument.getName());
+        documentSummaryDto.setType(newDocument.getType());
+
+        when(candidateRepository.findById(candidateId)).thenReturn(Optional.of(candidate));
+        when(documentRepository.save(any(Document.class))).thenAnswer(invocation -> {
+            Document doc = invocation.getArgument(0);
+            doc.setId(2);
+            return doc;
+        });
+
+        DocumentSummaryDto result = documentService.uploadDocument(candidateId, file, documentType);
+
+        assertNotNull(result);
+        assertEquals(2, result.getId());
+        assertEquals("test.pdf", result.getName());
+        assertEquals(DocumentType.PDF, result.getType());
+
+        verify(candidateRepository, times(1)).findById(candidateId);
+        verify(documentRepository, times(1)).save(any(Document.class));
+    }
+
+    @Test
+    void testUploadDocumentDuplicate() {
         when(candidateRepository.findById(candidateId)).thenReturn(Optional.of(candidate));
 
         Document existingDocument = new Document();

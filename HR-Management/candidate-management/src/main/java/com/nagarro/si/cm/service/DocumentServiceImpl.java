@@ -37,7 +37,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public DocumentDto uploadDocument(int candidateId, MultipartFile file, String documentType) throws IOException, SQLException {
+    public DocumentSummaryDto uploadDocument(int candidateId, MultipartFile file, String documentType) throws IOException, SQLException {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new EntityNotFoundException("Candidate not found with ID: " + candidateId));
 
@@ -60,13 +60,12 @@ public class DocumentServiceImpl implements DocumentService {
 
         documentRepository.save(newDocument);
 
-        DocumentDto documentDto = new DocumentDto();
-        documentDto.setId(newDocument.getId());
-        documentDto.setType(newDocument.getType());
-        documentDto.setName(newDocument.getName());
-        documentDto.setContent(newDocument.getContent().toString().getBytes());
+        DocumentSummaryDto documentSummaryDto = new DocumentSummaryDto();
+        documentSummaryDto.setId(newDocument.getId());
+        documentSummaryDto.setType(newDocument.getType());
+        documentSummaryDto.setName(newDocument.getName());
 
-        return documentDto;
+        return documentSummaryDto;
     }
 
     @Override
